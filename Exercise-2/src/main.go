@@ -50,6 +50,7 @@ func main() {
 		sport:  "Basketball",
 		rank:   "first",
 		team:   "Lakers"}
+	// designer
 	second := designer{worker: worker{man: man{name: "Dasha", age: 40, sex: "female"}},
 		salary:     2020,
 		position:   "head designer",
