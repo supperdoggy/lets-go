@@ -5,6 +5,7 @@ func main() {
 	var w2 WorkerPrinter = &BasketBallPlayer{Position: "PG", Worker: Worker{Name: "Max Maric"}}
 	var w3 WorkerPrinter = &Singer{Position: "LeadSinger", Worker: Worker{Name: "Marlin Manson"}}
 
+	// creating array of interfaces
 	var a [3]WorkerPrinter
 	a[0] = w1
 	a[1] = w2
@@ -15,3 +16,9 @@ func main() {
 	}
 
 }
+// OUTPUT
+//
+//	Daniel Popov : Programmer
+//	Max Maric : PG
+//	Marlin Manson : LeadSinger
+//
