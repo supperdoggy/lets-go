@@ -2,15 +2,17 @@ package main
 
 import "fmt"
 
-// cache for information about professions
 var (
+	// hash for information about professions
 	infoAboutWorkers = make(map[WorkerPrinter]string)
+	// hash for storing different values of different types
+	differentTypes = make(map[interface{}]interface{})
 )
 
-// function gets arguments and outputs its types
-func getType(a ...interface{}) {
-	for _, v := range a {
-		fmt.Printf("%T\n", v)
+// function gets map and outputs its types
+func getType(a map[interface{}]interface{}) {
+	for k, v := range a {
+		fmt.Printf("Key: %v, value type :%T\n", k, v)
 	}
 }
 
@@ -36,17 +38,31 @@ func main() {
 		fmt.Println("Key:", k, ". Value:", v)
 	}
 
-	// outputting types of arguments
-	getType(12, 223., "string", infoAboutWorkers)
+	// assigning different keys to different values
+	differentTypes[0] = uint(2)
+	differentTypes[1.] = false
+	// int(2) != byte(2)
+	differentTypes[2] = "Dave"
+	differentTypes[byte(2)] = infoAboutWorkers
+
+	differentTypes[4i+2] = differentTypes
+	differentTypes["Hello world"] = "H"
+	differentTypes[[3]int{}] = [3]int{}
+	// outputting types of map
+	getType(differentTypes)
+
 }
 
 // OUTPUT
 //
-// Key: &{TeamLead  {Daniel Popov}} . Value: Daniel Popov, Programmer : TeamLead
-// Key: &{PG {Max Maric}} . Value: Max Maric, BasketBall player : PG
-// Key: &{LeadSinger {Marlin Manson}} . Value: Marlin Manson, Singer : LeadSinger
-// int
-// float64
-// string
-// map[main.WorkerPrinter]string
+//Key: &{LeadSinger {Marlin Manson}} . Value: Marlin Manson, Singer : LeadSinger
+//Key: &{TeamLead  {Daniel Popov}} . Value: Daniel Popov, Programmer : TeamLead
+//Key: &{PG {Max Maric}} . Value: Max Maric, BasketBall player : PG
+//Key: (2+4i), value type :map[interface {}]interface {}
+//Key: Hello world, value type :string
+//Key: [0 0 0], value type :[3]int
+//Key: 0, value type :uint
+//Key: 1, value type :bool
+//Key: 2, value type :string
+//Key: 2, value type :map[main.WorkerPrinter]string
 //
