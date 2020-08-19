@@ -29,6 +29,7 @@ func newWorker(name, position, job, email, phone, age string) {
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
+	resp.Body.Close()
 }
 
 // getting info about worker
@@ -47,6 +48,7 @@ func getWorkerAbout(id string) {
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
+	resp.Body.Close()
 }
 
 func main() {
