@@ -44,8 +44,6 @@ func newWorker(writer http.ResponseWriter, req *http.Request) {
 		cache[w.id] = w
 		fmt.Println("Worker created successfully!")
 		fmt.Println(w.getInfo(), "\n")
-		writer.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(writer).Encode(w)
 
 	default:
 		fmt.Println("Not POST request")
