@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -20,12 +21,14 @@ func newWorker(name, position, job, email, phone, age string) {
 		"age":      {age},
 	}
 	// getting response
-	_, err := http.PostForm(u, formData)
+	resp, err := http.PostForm(u, formData)
 	// if we get error then print it and return nil
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
 }
 
 // getting info about worker
@@ -37,11 +40,13 @@ func getWorkerAbout(id string) {
 		"id": {id},
 	}
 	// getting response
-	_, err := http.PostForm(u, formData)
+	resp, err := http.PostForm(u, formData)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
 }
 
 func main() {
