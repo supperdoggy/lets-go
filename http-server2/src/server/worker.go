@@ -2,7 +2,7 @@ package main
 
 type worker struct {
 	name        string `json:"name"`
-	age         string `json:"age"`	
+	age         string `json:"age"`
 	position    string `json:"position"`
 	job         string `json:"job"`
 	phoneNumber string `json:"phone_number"`
