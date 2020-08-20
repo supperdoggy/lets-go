@@ -7,10 +7,13 @@ import (
 	"net/url"
 )
 
+const(
+	newWorkerUrl = "http://localhost:8080/newWorker"
+	getWorkerUrl = "http://localhost:8080/getWorker"
+)
+
 // creating new worker on server
 func newWorker(name, position, job, email, phone, age string) {
-	// url
-	const u = "http://localhost:8080/newWorker"
 	// creating worker
 	formData := url.Values{
 		"name":     {name},
@@ -21,34 +24,32 @@ func newWorker(name, position, job, email, phone, age string) {
 		"age":      {age},
 	}
 	// getting response
-	resp, err := http.PostForm(u, formData)
+	resp, err := http.PostForm(newWorkerUrl, formData)
 	// if we get error then print it and return nil
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
-	resp.Body.Close()
 }
 
 // getting info about worker
 func getWorkerAbout(id string) {
-	// url
-	const u = "http://localhost:8080/getWorker"
 	// data for POST request
 	formData := url.Values{
 		"id": {id},
 	}
 	// getting response
-	resp, err := http.PostForm(u, formData)
+	resp, err := http.PostForm(getWorkerUrl, formData)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
-	resp.Body.Close()
 }
 
 func main() {

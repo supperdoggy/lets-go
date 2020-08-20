@@ -19,7 +19,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4398d7b0-28f7-4c56-8d5f-a198072842a5" name="Default Changelist" comment="" />
+    <list default="true" id="4398d7b0-28f7-4c56-8d5f-a198072842a5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/client/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ping-pong/src/client/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/../ping-pong/src/client/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ping-pong/src/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/../ping-pong/src/server/server.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

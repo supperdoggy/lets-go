@@ -25,9 +25,10 @@ func newWorker(writer http.ResponseWriter, req *http.Request) {
 	case "POST":
 		fmt.Println("Got POST request")
 		// parsing form and checking for errors
-		if err := req.ParseForm(); err != nil {
+		if err := req.ParseForm(); err != nil{
 			// if there is error - printing it
 			fmt.Println(err.Error())
+			return
 		}
 		// creating new worker with data in form
 		w := worker{name: req.Form.Get("name"),
@@ -43,7 +44,6 @@ func newWorker(writer http.ResponseWriter, req *http.Request) {
 		cache[w.id] = w
 		fmt.Println("Worker created successfully!")
 		fmt.Println(w.getInfo(), "\n")
-
 	default:
 		fmt.Println("Not POST request")
 		// in case request method is not POST just returns nil
@@ -71,8 +71,9 @@ func getWorker(writer http.ResponseWriter, req *http.Request) {
 		if w, ok := cache[id]; ok {
 			fmt.Println("Found worker!")
 			fmt.Println(w.getInfo())
+			fmt.Fprint(writer, w.getInfo())
 		} else {
-			fmt.Println("Nothing found by your id")
+			fmt.Fprint(writer, "Nothing found by your id")
 		}
 		return
 	default:

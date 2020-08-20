@@ -7,12 +7,20 @@ import (
 	"net/url"
 )
 
+// making post request to given url with given values
 func postRequest(u string, val url.Values) {
+	// sending post request + getting response
 	resp, err := http.PostForm(u, val)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
+		return
 	}
-	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	// parsing body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
 	fmt.Println(string(body))
 }
 
