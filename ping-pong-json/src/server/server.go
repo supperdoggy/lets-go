@@ -9,6 +9,11 @@ import (
 	"net/url"
 )
 
+const(
+	htmlFormType = "application/x-www-form-urlencoded"
+	jsonFormType = "application/json"
+)
+
 // getting data from html form
 func getFormData(req *http.Request) (url.Values, error) {
 	if err := req.ParseForm(); err != nil {
@@ -64,14 +69,14 @@ func handleJsonData(req *http.Request) (answer string, err error){
 }
 
 // checking content type
-func handlePostRequest(writer *http.ResponseWriter, req *http.Request) (answer string, err error){
+func handlePostRequest(req *http.Request) (answer string, err error){
 	switch req.Header.Get("content-type") {
 	// html form
-	case "application/x-www-form-urlencoded":
+	case htmlFormType:
 		fmt.Println("got form request")
 		return handleFormData(req)
 		// json
-	case "application/json":
+	case jsonFormType:
 		fmt.Println("got json request")
 		return handleJsonData(req)
 		// other
@@ -87,7 +92,7 @@ func pingPong(writer http.ResponseWriter, req *http.Request) {
 		return
 	case "POST":
 		// getting answer
-		answer, err := handlePostRequest(&writer, req)
+		answer, err := handlePostRequest(req)
 		if err != nil {
 			fmt.Println(err)
 		}
