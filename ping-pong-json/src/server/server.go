@@ -80,6 +80,7 @@ func handlePostRequest(writer *http.ResponseWriter, req *http.Request) (answer s
 	}
 }
 
+// ping pong request handling
 func pingPong(writer http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case "GET":
