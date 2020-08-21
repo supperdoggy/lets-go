@@ -69,9 +69,10 @@ func getWorker(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
+
 // to send json!!!
-func sendJson(writer http.ResponseWriter, request *http.Request){
-	userJson, err := json.Marshal(map[string]string{"ok":"ok"})
+func sendJson(writer http.ResponseWriter, request *http.Request) {
+	userJson, err := json.Marshal(map[string]string{"ok": "ok"})
 	if err != nil {
 		fmt.Println(err.Error())
 		return

@@ -10,7 +10,7 @@ import (
 
 // making post request with html form values
 // "application/x-www-form-urlencoded"
-func htmlFormPostRequest(u string, values url.Values) (answer string, err error) {
+func htmlFormPostRequest(u string, values url.Values) (answer interface{}, err error) {
 	// getting response
 	resp, err := http.PostForm(u, values)
 	// if we get error then print it and return nil
@@ -18,12 +18,12 @@ func htmlFormPostRequest(u string, values url.Values) (answer string, err error)
 		fmt.Println(err.Error())
 		return
 	}
-	return readPlainTextResponse(resp)
+	return responseReader(resp)
 }
 
 // POST request method json
 // "application/json"
-func postRequestJson(u string, val map[string]string) (answer string, err error) {
+func postRequestJson(u string, val map[string]string) (answer interface{}, err error) {
 	// encoding values
 	out, err := json.Marshal(val)
 	if err != nil {
@@ -38,5 +38,14 @@ func postRequestJson(u string, val map[string]string) (answer string, err error)
 		return
 	}
 	// returning answer
-	return readPlainTextResponse(resp)
+	return responseReader(resp)
+}
+
+func responseReader(response *http.Response) (interface{}, error) {
+	switch response.Header.Get("Content-Type") {
+	case jsonContentType:
+		return readJsonResponse(response)
+	default:
+		return readPlainTextResponse(response)
+	}
 }

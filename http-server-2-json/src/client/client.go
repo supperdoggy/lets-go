@@ -13,6 +13,8 @@ const (
 	getWorkerUrl    = "http://localhost:8080/getWorker"
 	jsonContentType = "application/json"
 	jsonGetUrl      = "http://localhost:8080/getJson"
+	htmlFormType    = "application/x-www-form-urlencoded"
+	plainTextType   = "text/plain"
 )
 
 // reading plain text answer got from server
@@ -108,6 +110,6 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println(mymap["ok"])
+	fmt.Println(mymap)
 
 }
