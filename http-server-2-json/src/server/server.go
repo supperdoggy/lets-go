@@ -109,7 +109,7 @@ func newWorker(writer http.ResponseWriter, req *http.Request) {
 func getWorker(writer http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case "POST":
-		fmt.Println("get worker request")
+		fmt.Println("Got worker request")
 		resp, err := handlePostRequest(req)
 		if err != nil {
 			fmt.Println(err.Error())
