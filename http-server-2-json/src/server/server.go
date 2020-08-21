@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -68,6 +69,19 @@ func getWorker(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
+// to send json!!!
+func sendJson(writer http.ResponseWriter, request *http.Request){
+	userJson, err := json.Marshal(map[string]string{"ok":"ok"})
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	writer.Write(userJson)
+
+}
 
 func main() {
 	fmt.Println("Starting server...")
@@ -75,6 +89,8 @@ func main() {
 	http.HandleFunc("/newWorker", newWorker)
 	// path for getting info about a worker by id of the worker
 	http.HandleFunc("/getWorker", getWorker)
+	// sending json
+	http.HandleFunc("/getJson", sendJson)
 	// staring server
 	err := http.ListenAndServe(":8080", nil)
 	// if we get an error it will print
