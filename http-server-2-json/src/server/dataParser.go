@@ -8,6 +8,14 @@ import (
 	"net/url"
 )
 
+func parseForm(req *http.Request) (err error) {
+	err = req.ParseForm()
+	if err != nil {
+		return
+	}
+	return
+}
+
 func getJsonData(req *http.Request) (url.Values, error) {
 	// result
 	mymap := make(map[string]string)

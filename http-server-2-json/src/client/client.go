@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,6 +12,9 @@ const (
 	newWorkerUrl    = "http://localhost:8080/newWorker"
 	getWorkerUrl    = "http://localhost:8080/getWorker"
 	jsonContentType = "application/json"
+	jsonGetUrl      = "http://localhost:8080/getJson"
+	htmlFormType    = "application/x-www-form-urlencoded"
+	plainTextType   = "text/plain"
 )
 
 // reading plain text answer got from server
@@ -22,6 +26,20 @@ func readPlainTextResponse(response *http.Response) (string, error) {
 		return "", err
 	}
 	return string(body), nil
+}
+
+func readJsonResponse(response *http.Response) (answer map[string]string, err error) {
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	err = json.Unmarshal(body, &answer)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	return
 }
 
 func main() {
@@ -81,4 +99,17 @@ func main() {
 	}
 	// printing answer we got
 	fmt.Println(answer)
+	// get json answer
+	resp, err := http.Get(jsonGetUrl)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	mymap, err = readJsonResponse(resp)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println(mymap)
+
 }
