@@ -1,12 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"math/rand"
 	"net/http"
-	"net/url"
 )
 
 var cache = make(map[string]worker)
@@ -15,66 +11,6 @@ const (
 	htmlFormType = "application/x-www-form-urlencoded"
 	jsonFormType = "application/json"
 )
-
-// returns random string of length
-func randomStringGenerator(l int) string {
-	// letters and number to random pick
-	const lettersAndNumbers = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-	result := make([]byte, l)
-	for i := range result {
-		result[i] = lettersAndNumbers[rand.Intn(len(lettersAndNumbers))]
-	}
-	return string(result)
-}
-
-func parseForm(req *http.Request) (err error) {
-	err = req.ParseForm()
-	if err != nil {
-		return
-	}
-	return
-}
-
-func getJsonData(req *http.Request) (url.Values, error) {
-	// result
-	mymap := make(map[string]string)
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		fmt.Println(err.Error())
-		return url.Values{}, err
-	}
-	err = json.Unmarshal(body, &mymap)
-	if err != nil {
-		fmt.Println(err.Error())
-		return url.Values{}, err
-	}
-	return jsonToUrlValues(&mymap), nil
-}
-
-// checking content type
-// return ether url.values ether map
-func handlePostRequest(req *http.Request) (url.Values, error) {
-	switch req.Header.Get("content-type") {
-	// html form
-	case htmlFormType:
-		parseForm(req)
-		return req.Form, nil
-		// json
-	case jsonFormType:
-		return getJsonData(req)
-		// other
-	default:
-		return nil, fmt.Errorf("wrong request type")
-	}
-}
-
-func jsonToUrlValues(mymap *map[string]string) url.Values {
-	values := make(url.Values)
-	for k, v := range *mymap {
-		values.Add(k, v)
-	}
-	return values
-}
 
 // Creating new worker using data in Post form
 func newWorker(writer http.ResponseWriter, req *http.Request) {
