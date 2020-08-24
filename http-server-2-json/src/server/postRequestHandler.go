@@ -12,9 +12,8 @@ func handlePostRequest(req *http.Request) (url.Values, error) {
 	switch req.Header.Get("content-type") {
 	// html form
 	case htmlFormType:
-		err := parseForm(req)
+		err := req.ParseForm()
 		if err != nil {
-			fmt.Println(err.Error())
 			return nil, err
 		}
 		return req.Form, nil

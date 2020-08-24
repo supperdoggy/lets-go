@@ -99,6 +99,7 @@ func main() {
 	}
 	// printing answer we got
 	fmt.Println(answer)
+
 	// get json answer
 	resp, err := http.Get(jsonGetUrl)
 	if err != nil {

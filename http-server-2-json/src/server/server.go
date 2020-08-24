@@ -77,11 +77,9 @@ func sendJson(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 	writer.Write(userJson)
-
 }
 
 func main() {
