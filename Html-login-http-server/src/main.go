@@ -105,6 +105,9 @@ func login(writer http.ResponseWriter, request *http.Request) {
 }
 
 func main() {
+	// first user
+	users["admin"] = "admin"
+	//
 	fmt.Println("Starting server...")
 	// login path
 	http.HandleFunc("/login", login)
