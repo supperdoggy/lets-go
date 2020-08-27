@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 const jsonContentType = "application/json"
@@ -39,23 +40,54 @@ func postRequestJson(u string, val map[string]string) (answer string, err error)
 	return readPlainTextResponse(resp)
 }
 
+func getNewToken(username, password string) (string, error) {
+	userData := map[string]string{
+		"username": username,
+		"pass":     password,
+	}
+	answer, err := postRequestJson("http://localhost:8080/getToken", userData)
+	if err != nil {
+		fmt.Println(err.Error())
+		return "", err
+	}
+	if answer == "Wrong username/password" {
+		return "", fmt.Errorf("wrong username/password")
+	}
+	return answer, nil
+}
 
-func main(){
-	mymap := make(map[string]string)
-	mymap["username"] = "admin"
-	mymap["pass"] = "admin"
-	answer, err := postRequestJson("http://localhost:8080/getToken", mymap)
+func ping(userToken string) (err error) {
+	userData := map[string]string{
+		"token": userToken,
+	}
+	answer, err := postRequestJson("http://localhost:8080/ping", userData)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	if answer == "Wrong token!" {
+		return fmt.Errorf(answer)
+	}
 	fmt.Println(answer)
+	return
+}
 
-	mymap = map[string]string{"token":string(answer)}
-	answer, err = postRequestJson("http://localhost:8080/ping", mymap)
+func main() {
+	userToken, err := getNewToken("admin", "admin")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println(answer)
+	for i := 0; i < 10; i++ {
+		fmt.Println("Token = ", userToken)
+		err = ping(userToken)
+		if err != nil && err.Error() == "Wrong token!" {
+			userToken, err = getNewToken("admin", "admin")
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+		}
+		time.Sleep(1 * time.Minute)
+	}
 }
