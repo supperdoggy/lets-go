@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="956e1a3f-d42e-49fd-b6a0-7e8b4352ee80" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/client/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/client/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/main.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1gYytO8Hj51K29nShLpbosWBSLg" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RunManager">
+    <configuration name="go build github.com/supperdoggy/lets-go/token-login/src/client" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="token-login" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/src/client/main.go" />
+      <package value="github.com/supperdoggy/lets-go/token-login/src/client" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build github.com/supperdoggy/lets-go/token-login/src/client" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1038" height="702" key="GridCell.Tab.0.bottom" timestamp="1598520169777">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.0.bottom/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169777" />
+    <state width="1038" height="702" key="GridCell.Tab.0.center" timestamp="1598520169775">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.0.center/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169775" />
+    <state width="1038" height="702" key="GridCell.Tab.0.left" timestamp="1598520169773">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.0.left/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169773" />
+    <state width="1038" height="702" key="GridCell.Tab.0.right" timestamp="1598520169776">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.0.right/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169776" />
+    <state width="1038" height="702" key="GridCell.Tab.1.bottom" timestamp="1598520169780">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.1.bottom/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169780" />
+    <state width="1038" height="702" key="GridCell.Tab.1.center" timestamp="1598520169779">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.1.center/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169779" />
+    <state width="1038" height="702" key="GridCell.Tab.1.left" timestamp="1598520169778">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.1.left/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169778" />
+    <state width="1038" height="702" key="GridCell.Tab.1.right" timestamp="1598520169779">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state width="1038" height="702" key="GridCell.Tab.1.right/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598520169779" />
+    <state x="-875" y="-488" width="670" height="676" key="search.everywhere.popup" timestamp="1598360773512">
+      <screen x="-1080" y="-939" width="1080" height="1920" />
+    </state>
+    <state x="-875" y="-488" width="670" height="676" key="search.everywhere.popup/0.23.1680.958/-1080.-939.1080.1920@-1080.-939.1080.1920" timestamp="1598360773512" />
+  </component>
+</project>

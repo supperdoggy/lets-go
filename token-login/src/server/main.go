@@ -37,11 +37,19 @@ func getJsonData(r *http.Request) (result map[string]string, err error) {
 
 func ping(writer http.ResponseWriter, request *http.Request) {
 	if request.Method != "POST" {
-		fmt.Fprint(writer, "Unsupported method")
+		_, err := fmt.Fprint(writer, "Unsupported method")
+		if err != nil{
+			fmt.Println(err.Error())
+			return
+		}
 		return
 	}
 	if request.Header.Get("content-type") != "application/json" {
-		fmt.Fprint(writer, "Unsupported data format")
+		_, err := fmt.Fprint(writer, "Unsupported data format")
+		if err != nil{
+			fmt.Println(err.Error())
+			return
+		}
 	}
 
 	jsonData, err := getJsonData(request)
@@ -52,14 +60,26 @@ func ping(writer http.ResponseWriter, request *http.Request) {
 
 	token, ok := jsonData["token"]
 	if !ok {
-		fmt.Fprint(writer, "No token")
+		_,err := fmt.Fprint(writer, "No token")
+		if err != nil{
+			fmt.Println(err.Error())
+			return
+		}
 		return
 	}
 	if validateToken(&token) {
-		fmt.Fprint(writer, "pong")
+		_, err := fmt.Fprint(writer, "pong")
+		if err != nil{
+			fmt.Println(err.Error())
+			return
+		}
 		return
 	}
-	fmt.Fprint(writer, "Wrong token!")
+	_, err = fmt.Fprint(writer, "Wrong token!")
+	if err != nil{
+		fmt.Println(err.Error())
+		return
+	}
 }
 
 // sha256 hashing algorithm
@@ -110,11 +130,17 @@ func generateToken() string {
 
 func getToken(writer http.ResponseWriter, request *http.Request) {
 	if request.Method != "POST" {
-		fmt.Fprint(writer, "Unsupported method")
+		_, err := fmt.Fprint(writer, "Unsupported method")
+		if err != nil{
+			fmt.Println(err.Error())
+		}
 		return
 	}
 	if request.Header.Get("content-type") != "application/json" {
-		fmt.Fprint(writer, "Unsupported data format")
+		_, err := fmt.Fprint(writer, "Unsupported data format")
+		if err != nil{
+			fmt.Println(err.Error())
+		}
 	}
 
 	jsonData, err := getJsonData(request)
@@ -122,14 +148,20 @@ func getToken(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-
 	if pass, ok := users[jsonData["username"]]; ok {
 		if pass == jsonData["pass"] {
-			fmt.Fprint(writer, generateToken())
+			_, err = fmt.Fprint(writer, generateToken())
+			if err != nil{
+				fmt.Println(err.Error())
+			}
 			return
 		}
 	}
-	fmt.Fprint(writer, "Wrong username/password")
+	_, err = fmt.Fprint(writer, "Wrong username/password")
+	if err != nil{
+		fmt.Println(err.Error())
+		return
+	}
 
 }
 
