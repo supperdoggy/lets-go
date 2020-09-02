@@ -21,6 +21,12 @@ var (
 	users      = make(map[string]string)
 )
 
+//type data struct {
+//	usersToken map[string]int64
+//	users map[string]user
+//	sync.RWMutex
+//}
+
 func getJsonData(r *http.Request) (result map[string]string, err error) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
