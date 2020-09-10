@@ -47,7 +47,11 @@ func main(){
 	fmt.Println("FIND")
 	query := bson.M{}
 	s := []student{}
-	students.Find(query).All(&s)
+	err = students.Find(query).All(&s)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 	for _, v := range s{
 		fmt.Println(v)
 	}

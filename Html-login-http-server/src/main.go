@@ -17,11 +17,32 @@ const (
 	salt                = "memes123memes123"
 	mongoUrl            = "mongodb://127.0.0.1:27017/"
 	usersDbName         = "httpLoginServer"
-	usersCollectionName = "users"
+	usersCollectionName = "users1"
 )
 
-// map with user data, username and hashed password
-var users = make(map[string]string)
+func usernameIsTaken(users *mgo.Collection, username string) (result bool, err error){
+	foundUsers := []User{}
+	err = users.Find(bson.M{"username": username}).All(&foundUsers)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	// if user already in base
+	if len(foundUsers) > 0 {
+		result = true
+		return
+	}
+	return
+}
+
+func insertIntoCollection(collection *mgo.Collection, data interface{}) (err error){
+	err = collection.Insert(data)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	return
+}
 
 // sha256 hashing algorithm
 func getSha256(text string) string {
@@ -64,32 +85,34 @@ func register(writer http.ResponseWriter, request *http.Request) {
 		}
 		defer session.Close()
 		users := session.DB(usersDbName).C(usersCollectionName)
-		// finding out if username is taken
-		foundUsers := []User{}
-		err = users.Find(bson.M{"username": username}).All(&foundUsers)
+		// if user already in base
+		isTaken, err := usernameIsTaken(users, username)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
 		}
-		// if user already in base
-		if len(foundUsers) > 0 {
-			_, err = fmt.Fprint(writer, "Username if already taken")
-			if err != nil {
+		if isTaken{
+			_, err = fmt.Fprintln(writer, "Username is taken")
+			if err !=nil{
 				fmt.Println(err.Error())
+				return
 			}
 			return
 		}
+		err = users.EnsureIndex(mgo.Index{
+			Key:              []string{"Username"},
+		})
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
 		// writing user into db
-		err = users.Insert(u)
-		if err != nil {
+		err = insertIntoCollection(users, u)
+		if err != nil{
 			fmt.Println(err.Error())
 			return
 		}
-		_, err = fmt.Fprint(writer, "Registered")
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
+		return
 	}
 }
 
@@ -158,14 +181,15 @@ func login(writer http.ResponseWriter, request *http.Request) {
 		default:
 			answer = "Wrong content-type!"
 		}
-		fmt.Fprint(writer, answer)
+		_, err := fmt.Fprint(writer, answer)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
 	}
 }
 
 func main() {
-	// first user
-	users["admin"] = "admin"
-	//
 	fmt.Println("Starting server...")
 	// login path
 	http.HandleFunc("/login", login)

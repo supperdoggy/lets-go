@@ -25,6 +25,6 @@ func postRequest(u string, val url.Values) {
 }
 
 func main() {
-	postRequest("http://localhost:8080/", url.Values{"req": {"ping"}})
-	postRequest("http://localhost:8080/", url.Values{"req": {"pong"}})
+	postRequest("http://localhost:8080/ping", url.Values{"req": {"ping"}})
+	postRequest("http://localhost:8080/ping", url.Values{"req": {"pong"}})
 }
