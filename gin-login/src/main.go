@@ -1,27 +1,26 @@
 package main
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
 	mongoUrl = "mongodb://127.0.0.1:27017/"
 	dbName = "gin-login"
 	usersSessionName = "users"
-	salt = "meme123meme123"
 )
 
-// sha256 hashing algorithm
-func getSha256(text string) string {
-	hashser := sha256.New()
-	hashser.Write([]byte(text + salt))
-	return hex.EncodeToString(hashser.Sum(nil))
+func getBcrypt(text string) string{
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(text), 4)
+	if err != nil {
+		panic(err.Error())
+	}
+	return string(hashedPass)
 }
 
 func mainPage(c *gin.Context){
@@ -66,7 +65,7 @@ func register(c *gin.Context){
 	u := User{
 		Id:       bson.NewObjectId(),
 		Username: username,
-		Password: getSha256(password),
+		Password: getBcrypt(password),
 	}
 	session, err := mgo.Dial(mongoUrl)
 	if err != nil {
@@ -105,12 +104,12 @@ func validateUser(username, password string) bool {
 	}
 	users := session.DB(dbName).C(usersSessionName)
 	foundUsers := []User{}
-	err = users.Find(bson.M{"username": username, "password": password}).All(&foundUsers)
+	err = users.Find(bson.M{"username": username}).All(&foundUsers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	if len(foundUsers) == 1 {
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUsers[0].Password), []byte(password));err==nil{
 		return true
 	}
 	return false
@@ -125,7 +124,7 @@ func login(c *gin.Context){
 		return
 	}
 
-	if validateUser(username, getSha256(password)){
+	if validateUser(username, password){
 		c.SetCookie("login", "true", 3600, "/", "localhost", false, true)
 		c.Redirect(http.StatusMovedPermanently, "/")
 		return
