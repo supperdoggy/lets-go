@@ -108,9 +108,9 @@ func validateUser(username, password string) bool {
 // checking if passed more than 5 minutes
 func validateToken(token *string) bool {
 	if savedTime, ok := usersToken[*token]; ok {
-		if (time.Now().Unix()-savedTime)/60 > 5 {
+		if (-savedTime)/60 > 5 {
 			return false
-		} else {
+		} else {time.Now().Unix()
 			return true
 		}
 	}

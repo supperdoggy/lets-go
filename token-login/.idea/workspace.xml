@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="956e1a3f-d42e-49fd-b6a0-7e8b4352ee80" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../gin-login/src/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../gin-login/src/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gin-login/src/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/../gin-login/src/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/server/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/main.go" afterDir="false" />
     </list>
