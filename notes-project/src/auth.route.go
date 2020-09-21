@@ -13,8 +13,7 @@ import (
 func login(c *gin.Context) {
 	session, err := mgo.Dial(mongoUrl)
 	if err != nil {
-		fmt.Println(err.Error())
-		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
+		panic(err.Error())
 		return
 	}
 	defer session.Close()
@@ -23,15 +22,18 @@ func login(c *gin.Context) {
 	username := c.PostForm("login")
 	password := c.PostForm("pass")
 	if username == "" || password == "" {
+		c.SetCookie("error", "Fill all the inputs!", 20, "/auth/login", "localhost", false, true)
 		c.Redirect(http.StatusMovedPermanently, "/auth/login")
 		return
 	}
 	if validateUser(username, password, users) {
 		createNewTokenCookie(c)
-		c.SetCookie("username", username, 99999, "/", "localhost", false, true)
+		c.SetCookie("username", username, 9999, "/", "localhost", false, true)
+		c.SetCookie("error", "", -1, "/auth/login", "localhost", false, true)
 		c.Redirect(http.StatusMovedPermanently, "/")
 		return
 	}
+	c.SetCookie("error", "Wrong username/password", 20, "/auth/login", "localhost", false, true)
 	c.Redirect(http.StatusMovedPermanently, "/auth/login")
 }
 
@@ -52,6 +54,7 @@ func register(c *gin.Context) {
 	username := c.PostForm("login")
 	password := c.PostForm("pass")
 	if username == "" || password == "" {
+		c.SetCookie("error", "Fill all the inputs", 20, "/auth/register", "localhost", false, true)
 		c.Redirect(http.StatusMovedPermanently, "/auth/register")
 		return
 	}
@@ -78,6 +81,7 @@ func register(c *gin.Context) {
 		return
 	}
 	if taken {
+		c.SetCookie("error", "Username is already taken!", 20, "/auth/register", "localhost", false, true)
 		c.Redirect(http.StatusMovedPermanently, "/auth/register")
 		return
 	}
@@ -86,6 +90,7 @@ func register(c *gin.Context) {
 		fmt.Println(err.Error())
 		return
 	}
+	c.SetCookie("error", "", -1, "/auth/register", "localhost", false, true)
 	c.Redirect(http.StatusMovedPermanently, "/auth/login")
 }
 

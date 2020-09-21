@@ -19,18 +19,36 @@ func getBcrypt(text string) string {
 }
 
 func loginPage(c *gin.Context) {
-	c.HTML(200, "login.html", gin.H{})
+	cookie, err := c.Cookie("error")
+	if err != nil {
+		cookie = ""
+	}
+	data := gin.H{}
+	if cookie != ""{
+		data["error"] = cookie
+	}
+
+	c.HTML(200, "login.html", data)
 }
 
 func registerPage(c *gin.Context) {
-	c.HTML(200, "register.html", gin.H{})
+	cookie, err := c.Cookie("error")
+	if err != nil {
+		cookie = ""
+	}
+	data := gin.H{}
+	if cookie != ""{
+		data["error"] = cookie
+	}
+
+	c.HTML(200, "register.html", data)
 }
 
 func main() {
 	fmt.Println("Starting server...")
 	r := gin.Default()
 	r.Static("/static", "./static")
-	r.LoadHTMLGlob("temples/*")
+	r.LoadHTMLGlob("templates/*")
 
 	auth := r.Group("/auth")
 	{
@@ -40,17 +58,13 @@ func main() {
 		// register
 		auth.GET("/register", registerPage)
 		auth.POST("/register", register)
-
 	}
 
 	m := r.Group("/")
 	{
 		m.POST("/", mainPage)
 		m.GET("/", mainPage)
-		m.POST("/newMessage", mainNewMessage)
 	}
-	//// validating login token
-	//r.GET("/validate", checkLogin)
 
 	if err := r.Run(); err != nil {
 		fmt.Println(err.Error())
