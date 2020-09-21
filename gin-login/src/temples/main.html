@@ -3,10 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>main</title>
+    <link rel="stylesheet" href="static/css/main.css">
 </head>
 <body>
+<h1 style="text-align: center">Messages</h1>
+
+{{range .messages}}
+<div>
+    <h2>{{.Author }} : {{ .Msg}} </h2>
+
+</div>
+    <break>
+{{end}}
+<break>
 <form action="/newMessage" method="post">
-    <input type="text" id="username" name="username" required>
     <input type="text" id="msg" name="msg" required>
     <input type="submit">
 </form>

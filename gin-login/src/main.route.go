@@ -5,22 +5,48 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
 	"time"
 )
 
 func mainPage(c *gin.Context) {
 	checkLogin(c)
-	c.HTML(200, "main.html", gin.H{})
+	s, err := mgo.Dial(mongoUrl)
+	if err != nil {
+		c.String(200, err.Error())
+		return
+	}
+	defer s.Close()
+	msgCollection := s.DB(dbName).C(messageSessionName)
+	var messages []messageStruct
+	iter := msgCollection.Find(nil).Limit(20).Iter()
+	err = iter.All(&messages)
+	if err != nil {
+		panic(err.Error())
+		return
+	}
+	username, err := c.Cookie("username")
+	if err != nil {
+		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
+		return
+	}
+	c.HTML(200, "main.html", gin.H{"messages": messages, "username": username})
 	return
 }
 
 func mainNewMessage(c *gin.Context) {
 	checkLogin(c)
-	username := c.PostForm("username")
+	username, err := c.Cookie("username")
+	if err != nil {
+		fmt.Println(err.Error())
+		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
+		return
+	}
 	msg := c.PostForm("msg")
 	if username != "" && msg != "" {
 		newMessage(username, msg)
 	}
+	c.Redirect(http.StatusPermanentRedirect, "/")
 	return
 }
 
@@ -34,10 +60,10 @@ func newMessage(username, msg string) {
 	messages := s.DB(dbName).C(messageSessionName)
 
 	m := messageStruct{
-		id:       bson.NewObjectId(),
-		author:   username,
-		msg:      msg,
-		dateTime: time.Now(),
+		Id:       bson.NewObjectId(),
+		Author:   username,
+		Msg:      msg,
+		DateTime: time.Now(),
 	}
 	err = messages.Insert(m)
 	if err != nil {

@@ -6,13 +6,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const (
-	mongoUrl           = "mongodb://127.0.0.1:27017/"
-	dbName             = "gin-login"
-	usersSessionName   = "users"
-	messageSessionName = "messages"
-)
-
 var (
 	tokenCache = make(map[string]enterToken)
 )
@@ -36,6 +29,7 @@ func registerPage(c *gin.Context) {
 func main() {
 	fmt.Println("Starting server...")
 	r := gin.Default()
+	r.Static("/static", "./static")
 	r.LoadHTMLGlob("temples/*")
 
 	auth := r.Group("/auth")
@@ -49,8 +43,12 @@ func main() {
 
 	}
 
-	r.GET("/", mainPage)
-	r.POST("/newMessage", mainNewMessage)
+	m := r.Group("/")
+	{
+		m.POST("/", mainPage)
+		m.GET("/", mainPage)
+		m.POST("/newMessage", mainNewMessage)
+	}
 	//// validating login token
 	//r.GET("/validate", checkLogin)
 

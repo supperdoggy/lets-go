@@ -7,9 +7,18 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
+	"strings"
 )
 
 func login(c *gin.Context) {
+	session, err := mgo.Dial(mongoUrl)
+	if err != nil {
+		fmt.Println(err.Error())
+		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
+		return
+	}
+	defer session.Close()
+	users := session.DB(dbName).C(usersSessionName)
 	// getting form data
 	username := c.PostForm("login")
 	password := c.PostForm("pass")
@@ -17,23 +26,18 @@ func login(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/auth/login")
 		return
 	}
-	if validateUser(username, password) {
+	if validateUser(username, password, users) {
 		createNewTokenCookie(c)
+		c.SetCookie("username", username, 99999, "/", "localhost", false, true)
 		c.Redirect(http.StatusMovedPermanently, "/")
 		return
 	}
 	c.Redirect(http.StatusMovedPermanently, "/auth/login")
 }
 
-func validateUser(username, password string) bool {
-	session, err := mgo.Dial(mongoUrl)
-	if err != nil {
-		fmt.Println(err.Error())
-		return false
-	}
-	users := session.DB(dbName).C(usersSessionName)
+func validateUser(username, password string, users *mgo.Collection) bool {
 	foundUsers := []User{}
-	err = users.Find(bson.M{"username": username}).All(&foundUsers)
+	err := users.Find(bson.M{"username": strings.ToLower(username)}).All(&foundUsers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
@@ -82,13 +86,12 @@ func register(c *gin.Context) {
 		fmt.Println(err.Error())
 		return
 	}
-	createNewTokenCookie(c)
 	c.Redirect(http.StatusMovedPermanently, "/auth/login")
 }
 
 func usernameIsTaken(users *mgo.Collection, username string) (result bool, err error) {
 	foundUsers := []User{}
-	err = users.Find(bson.M{"username": username}).All(&foundUsers)
+	err = users.Find(bson.M{"username": strings.ToLower(username)}).All(&foundUsers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -111,4 +114,5 @@ func checkLogin(c *gin.Context) {
 		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
 		return
 	}
+	return
 }
