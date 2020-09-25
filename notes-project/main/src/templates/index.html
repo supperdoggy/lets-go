@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notes app</title>
+    <script
+            src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+    <h2>Hello there, {{.token.Username}}!</h2>
+    <form id="newNote">
+        <label for="HeaderForm">Header</label><input type="text" id="HeaderForm">
+        <label for="TextForm"></label><input type="text" id="TextForm">
+        <input type="button" id="button">
+        <script type="text/javascript">
+            $("#button").click(function () {
+                $.ajax('http://localhost:8080/api/test', {
+                    type: 'POST',  // http method
+                    data: { "header": $("#HeaderForm").val(), "text":$("#TextForm").val(), "username":"{{.token.Username}}",// data to submit
+                    success: function (data) {
+                        $("#response").html(data.response);
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                    }
+                }});
+            })
+        </script>
+    </form>
+</body>
+</html>

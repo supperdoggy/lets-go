@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -24,7 +25,7 @@ func loginPage(c *gin.Context) {
 		cookie = ""
 	}
 	data := gin.H{}
-	if cookie != ""{
+	if cookie != "" {
 		data["error"] = cookie
 	}
 
@@ -37,7 +38,7 @@ func registerPage(c *gin.Context) {
 		cookie = ""
 	}
 	data := gin.H{}
-	if cookie != ""{
+	if cookie != "" {
 		data["error"] = cookie
 	}
 
@@ -64,6 +65,26 @@ func main() {
 	{
 		m.POST("/", mainPage)
 		m.GET("/", mainPage)
+	}
+	api := r.Group("/api")
+	{
+		api.POST("/newNote", newNote)
+		api.POST("/updateNote/:id", updateNote)
+		api.POST("/share/:username", shareNote)
+		api.GET("/test", func(c *gin.Context) {
+			c.HTML(200, "postRequestAjax.html", bson.M{})
+		})
+		api.POST("/test", func(c *gin.Context){
+			var data = make(map[string]interface{})
+			d := c.PostForm("request")
+			if d == "ping"{
+				data["response"] = "pong"
+			}else if d == "pong"{
+				data["response"] = "ping"
+			}
+			fmt.Println(data, d)
+			c.JSON(200, data)
+		})
 	}
 
 	if err := r.Run(); err != nil {
