@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/supperdoggy/lets-go/notes-project/notesApi/src"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -69,9 +68,9 @@ func main() {
 	}
 	api := r.Group("/api")
 	{
-		api.POST("/newNote", src.newNote)
-		api.POST("/updateNote/:id", src.updateNote)
-		api.POST("/share/:username", src.shareNote)
+		api.POST("/newNote", newNote)
+		api.POST("/updateNote/:id", updateNote)
+		api.POST("/share/:username", shareNote)
 		api.GET("/test", func(c *gin.Context) {
 			c.HTML(200, "postRequestAjax.html", bson.M{})
 		})

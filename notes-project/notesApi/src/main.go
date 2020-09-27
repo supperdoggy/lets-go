@@ -10,7 +10,7 @@ func main() {
 	api := r.Group("/api")
 	{
 		api.POST("/newNote", newNote)
-		api.POST("/updateNote/:id", updateNote)
+		api.POST("/updateNote", updateNote)
 		api.POST("/share/:username", shareNote)
 	}
 	if err := r.Run(":2020");err != nil{

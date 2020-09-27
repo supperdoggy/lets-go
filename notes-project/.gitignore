@@ -1,1 +1,3 @@
-src/constants.go
+login/src/constants.go
+main/src/constants.go
+notesApi/src/constants.go
