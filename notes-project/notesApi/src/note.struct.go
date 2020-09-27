@@ -7,8 +7,8 @@ import (
 )
 
 type Note struct {
-	Id       bson.ObjectId           `bson:"_id" form:"_id" json:"_id"`
-	PublicId string          `bson:"publicId" form:"publicId" json:"public_id"`
+	Id       bson.ObjectId          `bson:"_id" form:"_id" json:"_id"`
+	PublicId string                 `bson:"publicId" form:"publicId" json:"public_id"`
 	Title    string                 `bson:"title" form:"title" json:"title"`
 	Text     string                 `bson:"text" form:"text" json:"text"`
 	Owner    string                 `bson:"owner" form:"owner" json:"owner"`

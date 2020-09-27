@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func updateNote(c *gin.Context)  {
+func updateNote(c *gin.Context) {
 	//checkLogin(c)
 
 	notesCollection, err := getMongoSession(dbName, notesSessionName)
@@ -20,14 +20,14 @@ func updateNote(c *gin.Context)  {
 	Title := c.PostForm("Title")
 	Text := c.PostForm("Text")
 
-	if id == ""{
+	if id == "" {
 		fmt.Println(err.Error())
 		c.Redirect(308, "/")
 		return
 	}
 
-	selector := bson.M{"publicId":id}
-	update := bson.M{"$set":bson.M{"title":Title, "text":Text}}
+	selector := bson.M{"publicId": id}
+	update := bson.M{"$set": bson.M{"title": Title, "text": Text}}
 
 	err = notesCollection.Update(selector, update)
 	if err != nil {
@@ -37,11 +37,11 @@ func updateNote(c *gin.Context)  {
 
 }
 
-func newNote(c *gin.Context){
+func newNote(c *gin.Context) {
 	//checkLogin(c)
 
 	notesSession, err := getMongoSession(dbName, notesSessionName)
-	if err != nil{
+	if err != nil {
 		panic(err.Error())
 		return
 	}
@@ -77,14 +77,14 @@ func newNote(c *gin.Context){
 		Users:    nil,
 	}
 	err = notesSession.Insert(note)
-	if err != nil{
+	if err != nil {
 		panic(err.Error())
 		return
 	}
 
 }
 
-func shareNote(c *gin.Context){
+func shareNote(c *gin.Context) {
 	//noteSession, err := getMongoSession(dbName, notesSessionName)
 	//if err != nil {
 	//	panic(err.Error())
