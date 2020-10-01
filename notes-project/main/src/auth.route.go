@@ -22,7 +22,7 @@ func login(c *gin.Context) {
 		return
 	}
 
-	if validateUser(username, password) == true{
+	if validateUser(username, password) == true {
 		createNewTokenCookie(c, username)
 		c.SetCookie("error", "", -1, "/auth/login", "localhost", false, true)
 		c.Redirect(http.StatusMovedPermanently, "/")
@@ -33,19 +33,19 @@ func login(c *gin.Context) {
 }
 
 func validateUser(username, password string) interface{} {
-	resp, err := http.PostForm("http://localhost:2283/api/login", url.Values{"login":{username}, "pass":{password}})
-	if err != nil{
+	resp, err := http.PostForm("http://localhost:2283/api/login", url.Values{"login": {username}, "pass": {password}})
+	if err != nil {
 		return false
 	}
 
 	data := make(map[string]interface{})
 	err = json.NewDecoder(resp.Body).Decode(&data)
-	if err != nil{
+	if err != nil {
 		return false
 	}
-	if data["ok"] == true{
+	if data["ok"] == true {
 		return data["answer"]
-	}else{
+	} else {
 		fmt.Println(data["error"])
 	}
 	return false
@@ -64,20 +64,20 @@ func register(c *gin.Context) {
 		return
 	}
 
-	resp, err := http.PostForm("http://localhost:2283/api/register", url.Values{"login": {username}, "pass":{password}})
-	if err != nil{
+	resp, err := http.PostForm("http://localhost:2283/api/register", url.Values{"login": {username}, "pass": {password}})
+	if err != nil {
 		panic(err.Error())
 	}
 
 	data := make(map[string]interface{})
 	err = json.NewDecoder(resp.Body).Decode(&data)
-	if err != nil{
+	if err != nil {
 		panic(err.Error())
 	}
-	if data["ok"] == true{
+	if data["ok"] == true {
 		c.Redirect(308, "/auth/login")
 		return
-	}else{
+	} else {
 		fmt.Println()
 		c.SetCookie("error", fmt.Sprintf("%v", data["error"]), 20, "/auth/register", "localhost", false, true)
 		c.Redirect(308, "/auth/register")

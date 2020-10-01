@@ -33,10 +33,10 @@ func createNewToken(limited bool, username string) enterToken {
 	return t
 }
 
-func createNewTokenCookie(c *gin.Context, username string) {
-	t := createNewToken(true, username) // cookie is limited
-	c.SetCookie("t", t.Token, 999, "/", "localhost", false, true)
+func createNewTokenCookie(c *gin.Context, username string) (t enterToken){
+	t = createNewToken(true, username) // cookie is limited
 	tokenCache[t.Token] = t
+	return
 }
 
 func validateEntryToken(s *string) bool {

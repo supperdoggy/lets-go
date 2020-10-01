@@ -6,6 +6,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var tokenCache = make(map[string]enterToken)
+
 func getBcrypt(text string) string {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(text), 4)
 	if err != nil {
@@ -22,6 +24,7 @@ func main() {
 	{
 		api.POST("/login", login)
 		api.POST("/register", register)
+		api.POST("/token", validateToken)
 	}
 
 	if err := r.Run(":2283"); err != nil {

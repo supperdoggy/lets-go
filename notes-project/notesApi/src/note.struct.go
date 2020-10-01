@@ -8,7 +8,7 @@ import (
 
 type Note struct {
 	Id       bson.ObjectId          `bson:"_id" form:"_id" json:"_id"`
-	PublicId string                 `bson:"publicId" form:"publicId" json:"public_id"`
+	PublicId string                 `bson:"publicId" form:"publicId" json:"publicId"`
 	Title    string                 `bson:"title" form:"title" json:"title"`
 	Text     string                 `bson:"text" form:"text" json:"text"`
 	Owner    string                 `bson:"owner" form:"owner" json:"owner"`
@@ -17,9 +17,17 @@ type Note struct {
 	Users    map[string]Permissions `bson:"users" form:"users" json:"users"`
 }
 
+func (n *Note) shareNote() error {
+	if !n.Shared {
+		n.Shared = true
+		return nil
+	}
+	return fmt.Errorf("note is already shared")
+}
+
 func (n *Note) addNewUser(userId string, p Permissions) error {
 	if !n.Shared {
-		return fmt.Errorf("note is not shared")
+		_ = n.shareNote()
 	}
 	if _, ok := n.Users[userId]; ok {
 		return fmt.Errorf("user already in map")

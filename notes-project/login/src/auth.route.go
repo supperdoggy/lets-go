@@ -6,29 +6,39 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"strconv"
 	"strings"
 	"time"
 )
 
 func login(c *gin.Context) {
+	response := map[string]interface{}{
+		"ok": false,
+		"error": "",
+		"answer": false,
+	}
 	usersCollection, err := getMongoSession(dbName, usersSessionName)
 	if err != nil {
-		fmt.Println(err.Error())
-		c.JSON(200, map[string]interface{}{"ok": false, "error": "Error connecting to mongodb", "answer": false})
+		response["error"] = "Error connecting to mongodb"
+		c.JSON(200, response)
 		return
 	}
 
 	username := c.PostForm("login")
 	password := c.PostForm("pass")
 	if username == "" || password == "" {
-		c.JSON(200, map[string]interface{}{"ok": false, "error": "not all inputs are filled", "answer": false})
+		response["error"] = "not all inputs are filled"
+		c.JSON(200, response)
 		return
 	}
 	if validateUser(username, password, usersCollection) {
-		c.JSON(200, map[string]interface{}{"ok": true, "error": "", "answer": true})
+		response["ok"] = true
+		response["answer"] = true
+		c.JSON(200, response)
 		return
 	}
-	c.JSON(200, map[string]interface{}{"ok": true, "error": "", "answer": false})
+	response["ok"] = true
+	c.JSON(200, response)
 	return
 }
 
@@ -46,43 +56,53 @@ func validateUser(username, password string, users *mgo.Collection) bool {
 }
 
 func register(c *gin.Context) {
+	response := map[string]interface{}{
+		"ok": false,
+		"error": "",
+		"answer": false,
+	}
+
 	username := c.PostForm("login")
 	password := c.PostForm("pass")
 	fmt.Println(username, password)
 	if username == "" || password == "" {
-		c.JSON(200, map[string]interface{}{"ok": false, "error": "not all inputs are filled", "answer": false})
+		c.JSON(200, map[string]interface{}{})
 		return
 	}
 	u := User{
 		Id:       bson.NewObjectId(),
-		UniqueId: bson.NewObjectId(),
-		Name:     "name",
+		UniqueId: strconv.FormatInt(time.Now().UnixNano(), 10),
 		Username: username,
 		Password: getBcrypt(password),
 		Created:  time.Time{},
 	}
+
 	usersCollection, err := getMongoSession(dbName, usersSessionName)
 	if err != nil {
 		fmt.Println(err.Error())
-		c.JSON(200, map[string]interface{}{"ok": false, "error": "Error connecting to mongodb"})
+		response["error"] = "Error connecting to mongodb"
+		c.JSON(200, response)
 	}
 	taken, err := usernameIsTaken(usersCollection, username)
 	if err != nil {
-		fmt.Println(err.Error())
-		c.JSON(200, map[string]interface{}{"ok": false, "error": "cant find user in db"})
+		response["error"] = "cant find user in db"
+		c.JSON(200, response)
 		return
 	}
 	if taken {
-		c.JSON(200, map[string]interface{}{"ok": false, "error": "Username is already taken!"})
+		response["error"] = "Username is already taken!"
+		c.JSON(200, response)
 		return
 	}
 	err = usersCollection.Insert(u)
 	if err != nil {
-		fmt.Println(err.Error())
-		c.JSON(200, map[string]interface{}{"ok": false, "error": "error inserting new user"})
+		response["error"] = "error inserting new user"
+		c.JSON(200, response)
 		return
 	}
-	c.JSON(200, map[string]interface{}{"ok": true, "error": "", "answer": true})
+	response["ok"] = true
+	response["answer"] = true
+	c.JSON(200, response)
 	return
 }
 
@@ -98,5 +118,21 @@ func usernameIsTaken(users *mgo.Collection, username string) (result bool, err e
 		result = true
 		return
 	}
+	return
+}
+
+func validateToken(c *gin.Context){
+	t := c.PostForm("t")
+	response := map[string]interface{}{
+		"ok":true,
+		"error":"",
+		"answer":false,
+	}
+	if validateEntryToken(&t){
+		response["answer"] = true
+	}else{
+		response["answer"] = false
+	}
+	c.JSON(200, response)
 	return
 }

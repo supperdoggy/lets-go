@@ -16,11 +16,11 @@
         <input type="button" id="button">
         <script type="text/javascript">
             $("#button").click(function () {
-                $.ajax('http://localhost:8080/api/test', {
+                $.ajax('http://localhost:2020/api/newNote', {
                     type: 'POST',  // http method
-                    data: { "header": $("#HeaderForm").val(), "text":$("#TextForm").val(), "username":"{{.token.Username}}",// data to submit
+                    data: { "Title": $("#HeaderForm").val(), "Text":$("#TextForm").val(), "Username":"{{.token.Username}}",// data to submit
                     success: function (data) {
-                        $("#response").html(data.response);
+                        window.alert("success")
                     },
                     error: function (jqXhr, textStatus, errorMessage) {
                     }
@@ -28,5 +28,9 @@
             })
         </script>
     </form>
+    {{range .notes}}
+        <h3>{{.}}</h3>
+        <br>
+    {{end}}
 </body>
 </html>

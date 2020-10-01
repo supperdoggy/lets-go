@@ -1,0 +1,126 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="static/css/comment.css">
+    <link rel="stylesheet" href="static/css/bg.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="/static/scripts/bg.js"></script>
+    <title>{{.note.Title}}</title>
+    <style>
+
+        .btn {
+            display: inline-block;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            border: 0;
+            outline: 0;
+            padding: 0;
+            transition: all 200ms ease-in;
+            cursor: pointer;
+            text-align: center;
+            background: rgb(214, 43, 163);
+            color: #ffffffd5;
+            box-shadow: 0 0 10px 2px rgba(192, 80, 80, 0.1);
+            border-radius: 2px;
+            padding: 12px 36px;
+            box-shadow: inset 0 0 10px 2px rgba(0, 0, 0, .2);
+        }
+        textarea {
+            resize: none;
+            height:auto;
+            max-height: 500px;
+            max-width:500px;
+            color:#999;
+            font-weight:350;
+            font-size:25px;
+            font-family:'Ubuntu', Helvetica, Arial, sans-serif;
+            width:100%;
+            background:#fff;
+            border-radius:3px;
+            line-height:2em;
+            border:none;
+            box-shadow:0px 0px 5px 1px rgba(0,0,0,0.1);
+            padding:30px;
+            -webkit-transition: height 2s ease;
+            -moz-transition: height 2s ease;
+            -ms-transition: height 2s ease;
+            -o-transition: height 2s ease;
+            transition: height 2s ease;
+        }
+        body {
+
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 600% 600%;
+            -webkit-animation: gradientBG 15s ease infinite;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @-webkit-keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div style="text-align: center;">
+    <a href="/" style="color: #000000;text-decoration:none;" ><h1 style="text-align: center;font-size: 40px;">{{.note.Text}}</h1></a>
+    <form method="POST">
+        <div class="textarea" style="text-align: center;">
+            <textarea id="text" class="textarea"  spellcheck="false" ng-model="loremIpsum" ng-keyup="autoExpand($event)" name="comment" style="width: 325px; height: 470px;" id="comment">{{.note.Text}}</textarea>
+        </div>
+        <br>
+        <div style="text-align: center;">
+            <input class="btn" type="button" value="Save" id="saveButton">
+            <script type="text/javascript">
+                $("#saveButton").click(function(){
+                    window.alert("Clicked!")
+                })
+                {{/*$("#btn").on("click", function () {*/}}
+                {{/*   $.ajax("http://localhost:2020/api/updateNote",{*/}}
+                {{/*       type:"POST",*/}}
+                {{/*       data:{"id":"{{.publicId}}", "Text":"{{.note.Text}}",*/}}
+                {{/*       success:function(data){*/}}
+                {{/*           if (data.ok){*/}}
+                {{/*               window.alert("Saved");*/}}
+                {{/*           }else{*/}}
+                {{/*               window.alert("something went wrong")*/}}
+                {{/*           }*/}}
+                {{/*       }*/}}
+                {{/*       }*/}}
+
+                {{/*   })*/}}
+                {{/*})*/}}
+            </script>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>
+
