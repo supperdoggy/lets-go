@@ -10,7 +10,7 @@ import (
 
 func login(c *gin.Context) {
 	// deleting token
-	_ = deleteCookieFromMap(c)
+	deleteCookieFromMap(c)
 	c.SetCookie("t", "", -1, "/auth/login", "localhost", false, true)
 
 	username := c.PostForm("login")
@@ -53,7 +53,7 @@ func validateUser(username, password string) interface{} {
 
 func register(c *gin.Context) {
 	// deleting token
-	_ = deleteCookieFromMap(c)
+	deleteCookieFromMap(c)
 	c.SetCookie("t", "", -1, "/auth/login", "localhost", false, true)
 
 	username := c.PostForm("login")

@@ -9,7 +9,7 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-    <h2>Hello there, {{.token.Username}}!</h2>
+    <h2>Hello there, {{.token}}!</h2>
     <form id="newNote">
         <label for="HeaderForm">Header</label><input type="text" id="HeaderForm">
         <label for="TextForm"></label><input type="text" id="TextForm">
@@ -18,7 +18,7 @@
             $("#button").click(function () {
                 $.ajax('http://localhost:2020/api/newNote', {
                     type: 'POST',  // http method
-                    data: { "Title": $("#HeaderForm").val(), "Text":$("#TextForm").val(), "Username":"{{.token.Username}}",// data to submit
+                    data: { "Title": $("#HeaderForm").val(), "Text":$("#TextForm").val(), "Username":"{{.token}}",// data to submit
                     success: function (data) {
                         window.alert("success")
                     },

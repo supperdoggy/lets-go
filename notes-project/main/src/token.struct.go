@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"strconv"
+	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -21,48 +23,71 @@ func (t *enterToken) expired(minutes int64) (result bool) {
 	return false
 }
 
-func createNewToken(limited bool, username string) enterToken {
-	t := enterToken{
-		Token:    strconv.FormatInt(time.Now().UnixNano(), 10),
-		Username: username,
+func createNewToken(username string) (string, error) {
+	request := url.Values{"username":{username}}
+	resp, err := http.PostForm("http://localhost:2283/api/newToken", request)
+	if err != nil {
+		return "", fmt.Errorf("error requesting new token")
 	}
-	if limited {
-		t.Limited = true
-		t.SavedTime = time.Now().Unix()
+	data := make(map[string]interface{})
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if !data["ok"].(bool){
+		return "", data["error"].(error)
 	}
-	return t
+	return data["answer"].(string), nil
 }
 
 func createNewTokenCookie(c *gin.Context, username string) {
-	t := createNewToken(true, username) // cookie is limited
-	c.SetCookie("t", t.Token, 999, "/", "localhost", false, true)
-	tokenCache[t.Token] = t
+	t, err := createNewToken(username) // cookie is limited
+	if err != nil {
+		c.Redirect(308, "/auth/login")
+		return
+	}
+	c.SetCookie("t", t, 999, "/", "localhost", false, true)
 }
 
 func validateEntryToken(s *string) bool {
-	t, ok := tokenCache[*s]
-	if ok {
-		if !t.expired(30) { // expiration time of token is set to 30 minutes
-			return true
-		}
-		delete(tokenCache, *s)
+	resp, err := http.PostForm("http://localhost:2283/api/token", url.Values{"t":{*s}})
+	if err != nil {
+		fmt.Println("http://localhost:2283/api/newToken isn't responding")
 		return false
 	}
-	return false
+	data := make(map[string]interface{})
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		fmt.Println("error decoding json data from http://localhost:2283/api/newToken")
+		return false
+	}
+	if !data["ok"].(bool){
+		return false
+	}else{
+		return data["answer"].(bool)
+	}
 }
 
-func deleteCookieFromMap(c *gin.Context) error {
+func findTokenStructInMap(t string) (string, error) {
+	resp, err := http.PostForm("http://localhost:2283/api/getTokenStruct", url.Values{"t":{t}})
+	if err != nil {
+		return "", err
+	}
+	data := make(map[string]interface{})
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		return "", err
+	}
+	if !data["ok"].(bool){
+		return "", fmt.Errorf(data["error"].(string))
+	}else{
+		return data["answer"].(string), nil
+	}
+}
+
+func deleteCookieFromMap(c *gin.Context){
 	t, err := c.Cookie("t")
 	if err != nil {
-		return err
+		return
 	}
-	delete(tokenCache, t)
-	return nil
+	_, _ = http.PostForm("http://localhost:2283/api/deleteToken", url.Values{"t":{t}})
+	return
 }
 
-func findTokenStructInMap(t string) (enterToken, error) {
-	if token, ok := tokenCache[t]; ok {
-		return token, nil
-	}
-	return enterToken{}, fmt.Errorf("token is not valid")
-}

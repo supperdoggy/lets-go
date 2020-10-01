@@ -53,7 +53,11 @@ func notePage(c *gin.Context) {
 		c.Redirect(308, "/auth/login")
 		return
 	}
-	token, _ := tokenCache[t]
+	token, err := findTokenStructInMap(t)
+	if err != nil {
+		c.Redirect(308, "/auth/login")
+		return
+	}
 	notesSession, _ := getMongoSession(dbName, notesSessionName)
 
 	id := c.Param("id")

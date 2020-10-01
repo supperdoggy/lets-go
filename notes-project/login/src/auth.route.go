@@ -130,9 +130,52 @@ func validateToken(c *gin.Context){
 	}
 	if validateEntryToken(&t){
 		response["answer"] = true
+		fmt.Println("token is good")
 	}else{
 		response["answer"] = false
 	}
 	c.JSON(200, response)
 	return
+}
+
+func newToken(c *gin.Context){
+	response := map[string]interface{}{
+		"ok":false,
+		"error":"",
+		"answer":false,
+	}
+	username := c.PostForm("username")
+	if username == ""{
+		response["error"] = "not provided username"
+		c.JSON(200, response)
+		return
+	}
+	t := createNewToken(true, username)
+	tokenCache[t.Token] = t
+	response["ok"] = true
+	response["answer"] = t.Token
+	c.JSON(200, response)
+	return
+}
+
+// takes token string and returns token struct
+func getTokenStruct(c *gin.Context){
+	response := map[string]interface{}{
+		"ok":false,
+		"error":"",
+		"answer":false,
+	}
+	t := c.PostForm("t")
+
+	token, err := findTokenStructInMap(t)
+	if err != nil{
+		response["answer"] = err.Error()
+		c.JSON(200, response)
+		return
+	}else{
+		response["ok"] = true
+		response["answer"] = token.Username
+		c.JSON(200, response)
+		return
+	}
 }

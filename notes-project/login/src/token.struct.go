@@ -33,12 +33,6 @@ func createNewToken(limited bool, username string) enterToken {
 	return t
 }
 
-func createNewTokenCookie(c *gin.Context, username string) (t enterToken){
-	t = createNewToken(true, username) // cookie is limited
-	tokenCache[t.Token] = t
-	return
-}
-
 func validateEntryToken(s *string) bool {
 	t, ok := tokenCache[*s]
 	if ok {
@@ -51,13 +45,14 @@ func validateEntryToken(s *string) bool {
 	return false
 }
 
-func deleteCookieFromMap(c *gin.Context) error {
-	t, err := c.Cookie("t")
-	if err != nil {
-		return err
+func deleteCookieFromMap(c *gin.Context) {
+	t := c.PostForm("t")
+	if t != "" {
+		return
+	}else{
+		delete(tokenCache, t)
+		return
 	}
-	delete(tokenCache, t)
-	return nil
 }
 
 func findTokenStructInMap(t string) (enterToken, error) {

@@ -25,6 +25,9 @@ func main() {
 		api.POST("/login", login)
 		api.POST("/register", register)
 		api.POST("/token", validateToken)
+		api.POST("/newToken", newToken)
+		api.POST("/getTokenStruct", getTokenStruct)
+		api.POST("/deleteToken", deleteCookieFromMap)
 	}
 
 	if err := r.Run(":2283"); err != nil {
