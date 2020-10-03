@@ -21,6 +21,7 @@ func updateNote(c *gin.Context) {
 
 	id := c.PostForm("id")
 	Text := c.PostForm("Text")
+	fmt.Println(id, Text)
 
 	if id == "" {
 		c.JSON(200, map[string]interface{}{
@@ -220,5 +221,29 @@ func sendNotes(c *gin.Context) {
 			"sharedNotes": sharedNotes,
 		},
 	})
+	return
+}
+
+func deleteNote(c *gin.Context){
+	response := map[string]interface{}{
+		"ok":false,
+		"error":"",
+	}
+	id := c.PostForm("id")
+
+	notesSession, err := getMongoSession(dbName, notesSessionName)
+	if err != nil {
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	err = notesSession.Remove(bson.M{"publicId":id})
+	if err != nil{
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	response["ok"] = true
+	c.JSON(200, response)
 	return
 }

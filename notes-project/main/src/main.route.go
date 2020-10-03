@@ -7,6 +7,15 @@ import (
 	"net/url"
 )
 
+func processNotes(notes []interface{}) []map[string]interface{} {
+	result := make([]map[string]interface{}, 1)
+	for _, v := range notes{
+		m := v.(map[string]interface{})
+		result = append(result, m)
+	}
+	return result
+}
+
 func mainPage(c *gin.Context) {
 	checkLogin(c)
 	t, err := c.Cookie("t")
@@ -30,13 +39,19 @@ func mainPage(c *gin.Context) {
 		return
 	}
 
-	// how to work with data
-	//answer, _ := notes["answer"].(map[string]interface{})
-	//own := answer["ownedNotes"].([]interface{})
-	//shared := answer["sharedNotes"]
-	//fmt.Println(own[0].(map[string]interface{})["text"])
-	//fmt.Println(shared)
+	//how to work with data
+	answer, _ := notes["answer"].(map[string]interface{})
+	var ownInterface []interface{}
+	var sharedInterface []interface{}
+	if answer["ownedNotes"] != nil{
+		ownInterface = answer["ownedNotes"].([]interface{})
+	}
+	if answer["sharedNotes"] != nil{
+		sharedInterface = answer["sharedNotes"].([]interface{})
+	}
 
-	c.HTML(200, "index.html", gin.H{"token": token, "notes":notes["answer"]})
+	own := processNotes(ownInterface)[1:]
+	shared := processNotes(sharedInterface)[1:]
+	c.HTML(200, "index1.html", gin.H{"token": token, "own":own, "shared":shared})
 	return
 }

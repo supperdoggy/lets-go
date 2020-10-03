@@ -28,6 +28,7 @@ func login(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/")
 		return
 	}
+
 	c.SetCookie("error", "Wrong username/password", 20, "/auth/login", "localhost", false, true)
 	c.Redirect(http.StatusMovedPermanently, "/auth/login")
 }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="static/css/bg.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="/static/scripts/bg.js"></script>
+    <script src="/static/scripts/comment.js"></script>
     <title>{{.note.Title}}</title>
     <style>
 
@@ -89,34 +90,14 @@
 </head>
 <body>
 <div style="text-align: center;">
-    <a href="/" style="color: #000000;text-decoration:none;" ><h1 style="text-align: center;font-size: 40px;">{{.note.Text}}</h1></a>
+    <a href="/" style="color: #000000;text-decoration:none;" ><h1 style="text-align: center;font-size: 40px;">{{.note.Title}}</h1></a>
     <form method="POST">
         <div class="textarea" style="text-align: center;">
             <textarea id="text" class="textarea"  spellcheck="false" ng-model="loremIpsum" ng-keyup="autoExpand($event)" name="comment" style="width: 325px; height: 470px;" id="comment">{{.note.Text}}</textarea>
         </div>
         <br>
         <div style="text-align: center;">
-            <input class="btn" type="button" value="Save" id="saveButton">
-            <script type="text/javascript">
-                $("#saveButton").click(function(){
-                    window.alert("Clicked!")
-                })
-                {{/*$("#btn").on("click", function () {*/}}
-                {{/*   $.ajax("http://localhost:2020/api/updateNote",{*/}}
-                {{/*       type:"POST",*/}}
-                {{/*       data:{"id":"{{.publicId}}", "Text":"{{.note.Text}}",*/}}
-                {{/*       success:function(data){*/}}
-                {{/*           if (data.ok){*/}}
-                {{/*               window.alert("Saved");*/}}
-                {{/*           }else{*/}}
-                {{/*               window.alert("something went wrong")*/}}
-                {{/*           }*/}}
-                {{/*       }*/}}
-                {{/*       }*/}}
-
-                {{/*   })*/}}
-                {{/*})*/}}
-            </script>
+            <input class="btn" type="button" onclick="update({{.id}})" value="Save" id="saveButton">
         </div>
 
     </form>

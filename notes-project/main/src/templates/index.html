@@ -28,9 +28,14 @@
             })
         </script>
     </form>
-    {{range .notes}}
-        <h3>{{.}}</h3>
-        <br>
+    <h1>Owned Notes</h1>
+    {{range .own}}
+        <h3>{{.title}}</h3>
+
+    {{end}}
+    <h1>Shared Notes</h1>
+    {{range .shared}}
+        <h3>{{.title}}</h3>
     {{end}}
 </body>
 </html>
