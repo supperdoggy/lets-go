@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/url"
@@ -10,7 +9,6 @@ import (
 
 func mainPage(c *gin.Context) {
 	checkLogin(c)
-	fmt.Println("token is good")
 	t, err := c.Cookie("t")
 	if err != nil {
 		// if we get an error returning user to login page

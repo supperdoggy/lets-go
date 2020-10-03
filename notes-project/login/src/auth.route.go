@@ -128,11 +128,14 @@ func validateToken(c *gin.Context){
 		"error":"",
 		"answer":false,
 	}
+	// if token is not valid then delete it from cache
 	if validateEntryToken(&t){
 		response["answer"] = true
-		fmt.Println("token is good")
 	}else{
 		response["answer"] = false
+		if _, ok := tokenCache[t]; ok{
+			delete(tokenCache, t)
+		}
 	}
 	c.JSON(200, response)
 	return
