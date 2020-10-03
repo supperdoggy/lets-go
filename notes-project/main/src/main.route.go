@@ -9,7 +9,7 @@ import (
 
 func processNotes(notes []interface{}) []map[string]interface{} {
 	result := make([]map[string]interface{}, 1)
-	for _, v := range notes{
+	for _, v := range notes {
 		m := v.(map[string]interface{})
 		result = append(result, m)
 	}
@@ -25,16 +25,16 @@ func mainPage(c *gin.Context) {
 		return
 	}
 	token, err := findTokenStructInMap(t)
-	if err!=nil {
+	if err != nil {
 		c.Redirect(http.StatusPermanentRedirect, "auth/login")
 		return
 	}
 	resp, err := http.PostForm("http://localhost:2020/api/getNotes", url.Values{
-		"username":{token},
+		"username": {token},
 	})
 	var notes map[string]interface{}
 	err = json.NewDecoder(resp.Body).Decode(&notes)
-	if err != nil{
+	if err != nil {
 		panic(err.Error())
 		return
 	}
@@ -43,15 +43,15 @@ func mainPage(c *gin.Context) {
 	answer, _ := notes["answer"].(map[string]interface{})
 	var ownInterface []interface{}
 	var sharedInterface []interface{}
-	if answer["ownedNotes"] != nil{
+	if answer["ownedNotes"] != nil {
 		ownInterface = answer["ownedNotes"].([]interface{})
 	}
-	if answer["sharedNotes"] != nil{
+	if answer["sharedNotes"] != nil {
 		sharedInterface = answer["sharedNotes"].([]interface{})
 	}
 
 	own := processNotes(ownInterface)[1:]
 	shared := processNotes(sharedInterface)[1:]
-	c.HTML(200, "index1.html", gin.H{"token": token, "own":own, "shared":shared})
+	c.HTML(200, "index1.html", gin.H{"token": token, "own": own, "shared": shared})
 	return
 }

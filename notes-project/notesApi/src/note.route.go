@@ -18,10 +18,9 @@ func updateNote(c *gin.Context) {
 		})
 		return
 	}
-
 	id := c.PostForm("id")
 	Text := c.PostForm("Text")
-	fmt.Println(id, Text)
+	Title := c.PostForm("Title")
 
 	if id == "" {
 		c.JSON(200, map[string]interface{}{
@@ -32,7 +31,7 @@ func updateNote(c *gin.Context) {
 		return
 	}
 	selector := bson.M{"publicId": id}
-	update := bson.M{"$set": bson.M{"text": Text}}
+	update := bson.M{"$set": bson.M{"text": Text, "title": Title}}
 
 	err = notesCollection.Update(selector, update)
 	if err != nil {
@@ -67,7 +66,7 @@ func newNote(c *gin.Context) {
 	Title := c.PostForm("Title")
 	Text := c.PostForm("Text")
 	Username := c.PostForm("Username")
-	if Title == "" || Text == "" || Username == "" {
+	if Title == "" || Username == "" {
 		c.JSON(200, map[string]interface{}{
 			"ok":     false,
 			"error":  "not all fields are filled",
@@ -103,6 +102,7 @@ func newNote(c *gin.Context) {
 }
 
 func shareNote(c *gin.Context) {
+	fmt.Println("Im here!")
 	noteSession, err := getMongoSession(dbName, notesSessionName)
 	if err != nil {
 		c.JSON(200, map[string]interface{}{
@@ -116,9 +116,8 @@ func shareNote(c *gin.Context) {
 	owner := c.PostForm("Owner")
 	username := c.PostForm("Username") // username of user we want to share note with
 	id := c.PostForm("Id")             // public id
-	canRedact, _ := strconv.ParseBool(c.PostForm("CanRedact"))
-	canAddNewUsers, _ := strconv.ParseBool(c.PostForm("CanAddNewUsers"))
-
+	canRedact := true // default value
+	canAddNewUsers := true // default value
 	var note Note
 
 	err = noteSession.Find(bson.M{"publicId": id}).One(&note)
@@ -131,7 +130,7 @@ func shareNote(c *gin.Context) {
 		return
 	}
 
-	err = note.shareNote() // returns error if note is shared
+	note.shareNote() // returns error if note is shared
 	if err != nil {
 		c.JSON(200, map[string]interface{}{
 			"ok":     false,
@@ -204,7 +203,7 @@ func sendNotes(c *gin.Context) {
 		return
 	}
 	var sharedNotes []Note
-	err = notesSession.Find(bson.M{"shared": true, "users."+username:bson.M{"$exists":true}}).All(&sharedNotes)
+	err = notesSession.Find(bson.M{"shared": true, "users." + username: bson.M{"$exists": true}}).All(&sharedNotes)
 	if err != nil {
 		c.JSON(200, map[string]interface{}{
 			"ok":     false,
@@ -224,10 +223,10 @@ func sendNotes(c *gin.Context) {
 	return
 }
 
-func deleteNote(c *gin.Context){
+func deleteNote(c *gin.Context) {
 	response := map[string]interface{}{
-		"ok":false,
-		"error":"",
+		"ok":    false,
+		"error": "",
 	}
 	id := c.PostForm("id")
 
@@ -237,8 +236,8 @@ func deleteNote(c *gin.Context){
 		c.JSON(200, response)
 		return
 	}
-	err = notesSession.Remove(bson.M{"publicId":id})
-	if err != nil{
+	err = notesSession.Remove(bson.M{"publicId": id})
+	if err != nil {
 		response["error"] = err.Error()
 		c.JSON(200, response)
 		return

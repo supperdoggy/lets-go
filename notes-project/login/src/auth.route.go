@@ -13,8 +13,8 @@ import (
 
 func login(c *gin.Context) {
 	response := map[string]interface{}{
-		"ok": false,
-		"error": "",
+		"ok":     false,
+		"error":  "",
 		"answer": false,
 	}
 	usersCollection, err := getMongoSession(dbName, usersSessionName)
@@ -57,8 +57,8 @@ func validateUser(username, password string, users *mgo.Collection) bool {
 
 func register(c *gin.Context) {
 	response := map[string]interface{}{
-		"ok": false,
-		"error": "",
+		"ok":     false,
+		"error":  "",
 		"answer": false,
 	}
 
@@ -121,19 +121,19 @@ func usernameIsTaken(users *mgo.Collection, username string) (result bool, err e
 	return
 }
 
-func validateToken(c *gin.Context){
+func validateToken(c *gin.Context) {
 	t := c.PostForm("t")
 	response := map[string]interface{}{
-		"ok":true,
-		"error":"",
-		"answer":false,
+		"ok":     true,
+		"error":  "",
+		"answer": false,
 	}
 	// if token is not valid then delete it from cache
-	if validateEntryToken(&t){
+	if validateEntryToken(&t) {
 		response["answer"] = true
-	}else{
+	} else {
 		response["answer"] = false
-		if _, ok := tokenCache[t]; ok{
+		if _, ok := tokenCache[t]; ok {
 			delete(tokenCache, t)
 		}
 	}
@@ -141,14 +141,14 @@ func validateToken(c *gin.Context){
 	return
 }
 
-func newToken(c *gin.Context){
+func newToken(c *gin.Context) {
 	response := map[string]interface{}{
-		"ok":false,
-		"error":"",
-		"answer":false,
+		"ok":     false,
+		"error":  "",
+		"answer": false,
 	}
 	username := c.PostForm("username")
-	if username == ""{
+	if username == "" {
 		response["error"] = "not provided username"
 		c.JSON(200, response)
 		return
@@ -162,20 +162,20 @@ func newToken(c *gin.Context){
 }
 
 // takes token string and returns token struct
-func getTokenStruct(c *gin.Context){
+func getTokenStruct(c *gin.Context) {
 	response := map[string]interface{}{
-		"ok":false,
-		"error":"",
-		"answer":false,
+		"ok":     false,
+		"error":  "",
+		"answer": false,
 	}
 	t := c.PostForm("t")
 
 	token, err := findTokenStructInMap(t)
-	if err != nil{
+	if err != nil {
 		response["answer"] = err.Error()
 		c.JSON(200, response)
 		return
-	}else{
+	} else {
 		response["ok"] = true
 		response["answer"] = token.Username
 		c.JSON(200, response)

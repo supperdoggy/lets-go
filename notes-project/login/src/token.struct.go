@@ -9,9 +9,9 @@ import (
 
 type enterToken struct {
 	Token     string `bson:"token" json:"token" form:"token"`
-	Limited   bool          `bson:"limited" json:"limited" form:"limited"`
-	SavedTime int64         `bson:"savedTime" json:"saved_time" form:"savedTime"`
-	Username  string        `bson:"username" json:"username"`
+	Limited   bool   `bson:"limited" json:"limited" form:"limited"`
+	SavedTime int64  `bson:"savedTime" json:"saved_time" form:"savedTime"`
+	Username  string `bson:"username" json:"username"`
 }
 
 func (t *enterToken) expired(minutes int64) (result bool) {
@@ -49,7 +49,7 @@ func deleteCookieFromMap(c *gin.Context) {
 	t := c.PostForm("t")
 	if t != "" {
 		return
-	}else{
+	} else {
 		delete(tokenCache, t)
 		return
 	}

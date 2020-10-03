@@ -86,11 +86,89 @@
             }
         }
 
+        .sign_in_button {
+            text-decoration: none;
+            outline: none;
+            display: inline-block;
+            width: 140px;
+            height: 45px;
+            line-height: 45px;
+            border-radius: 45px;
+            margin: 10px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 3px;
+            font-weight: 600;
+            color: #524f4e;
+            position:absolute;
+            left:0px;
+            top:10px;
+            background: white;
+            box-shadow: 0 8px 15px rgba(0,0,0,.1);
+            transition: .3s;
+        }
+        .sign_in_button:hover {
+            background: rgb(255,124,0);
+            box-shadow: linear-gradient(to right, rgb(255,124,0), rgb(249,187,0));
+            color: white;
+            transform: translateY(-7px);
+        }
+
+        .form-inline {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+        }
+
+        .form-inline label {
+            margin: 5px 10px 5px 0;
+        }
+
+        .form-inline input {
+            vertical-align: middle;
+            margin: 5px 10px 5px 0;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .form-inline button {
+            padding: 10px 20px;
+            background-color: dodgerblue;
+            border: 1px solid #ddd;
+            color: white;
+            cursor: pointer;
+        }
+
+        .form-inline button:hover {
+            background-color: royalblue;
+        }
+
+        @media (max-width: 800px) {
+            .form-inline input {
+                margin: 10px 0;
+            }
+
+            .form-inline {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     </style>
 </head>
 <body>
+<div>
+    <a class="sign_in_button" href="/">Back</a>
+</div>
+<br>
+<br>
+<br>
+<br>
+
 <div style="text-align: center;">
-    <a href="/" style="color: #000000;text-decoration:none;" ><h1 style="text-align: center;font-size: 40px;">{{.note.Title}}</h1></a>
+    <input type="text" id="title" style="color: #000000;text-decoration:none;text-align: center;font-size: 40px;" value="{{.note.Title}}">
     <form method="POST">
         <div class="textarea" style="text-align: center;">
             <textarea id="text" class="textarea"  spellcheck="false" ng-model="loremIpsum" ng-keyup="autoExpand($event)" name="comment" style="width: 325px; height: 470px;" id="comment">{{.note.Text}}</textarea>
@@ -102,6 +180,12 @@
 
     </form>
 </div>
+
+<form class="form-inline" action="">
+    <input type="text" id="username" placeholder="Enter username" name="username">
+    <button onclick="share({{.id}}, {{.note.Owner}}, $('#username').val())" type="button">Share!</button>
+</form>
+
 </body>
 </html>
 

@@ -11,7 +11,7 @@ func main() {
 	{
 		api.POST("/newNote", newNote)
 		api.POST("/updateNote", updateNote)
-		api.POST("/share/", shareNote)
+		api.POST("/share", shareNote)
 		api.POST("/getNotes", sendNotes)
 		api.POST("/delete", deleteNote)
 	}

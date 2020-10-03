@@ -17,17 +17,17 @@ type Note struct {
 	Users    map[string]Permissions `bson:"users" form:"users" json:"users"`
 }
 
-func (n *Note) shareNote() error {
+func (n *Note) shareNote() {
 	if !n.Shared {
 		n.Shared = true
-		return nil
+		return
 	}
-	return fmt.Errorf("note is already shared")
+	return
 }
 
 func (n *Note) addNewUser(userId string, p Permissions) error {
 	if !n.Shared {
-		_ = n.shareNote()
+		n.shareNote()
 	}
 	if _, ok := n.Users[userId]; ok {
 		return fmt.Errorf("user already in map")
