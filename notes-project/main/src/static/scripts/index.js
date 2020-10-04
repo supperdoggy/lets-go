@@ -11,5 +11,4 @@ function newNote(username){
         type:"POST",
         data:{"Username":username, "Title":"Example"}
     })
-    document.location.reload()
 }
