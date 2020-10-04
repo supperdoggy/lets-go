@@ -39,7 +39,6 @@ func mainPage(c *gin.Context) {
 		return
 	}
 
-	//how to work with data
 	answer, _ := notes["answer"].(map[string]interface{})
 	var ownInterface []interface{}
 	var sharedInterface []interface{}

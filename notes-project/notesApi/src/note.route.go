@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 )
@@ -99,6 +102,77 @@ func newNote(c *gin.Context) {
 		"answer": true,
 	})
 	return
+}
+
+func getNote(c *gin.Context){
+	response := map[string]interface{}{
+		"ok":    false,
+		"error": "",
+		"answer":nil,
+	}
+
+	notesSession, err := getMongoSession(dbName, notesSessionName)
+	if err != nil {
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+
+	id := c.PostForm("id")
+	t := c.PostForm("t")
+	var username string
+
+	var result Note
+	err = notesSession.Find(bson.M{"publicId":id}).One(&result)
+	if err!=nil{
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+
+	// getting username
+	data := make(map[string]interface{})
+	resp, err := http.PostForm("http://localhost:2283/api/getTokenStruct", url.Values{"t":{t}})
+	if err != nil{
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil{
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	// checking if user allowed to take get note
+	if data["ok"].(bool){
+		username = data["answer"].(string)
+	}else{
+		response["error"] = "wrong request"
+		c.JSON(200, response)
+		return
+	}
+	if result.Owner == username{
+		response["ok"] = true
+		response["answer"] = result
+		c.JSON(200, response)
+		return
+	}else if result.Shared{
+		if _, ok := result.Users[username];ok{
+			response["ok"] = true
+			response["answer"] = result
+			c.JSON(200, response)
+			return
+		}else{
+			response["error"] = "not allowed"
+			c.JSON(200, response)
+			return
+		}
+	}else{
+		response["error"] = "not allowed"
+		c.JSON(200, response)
+		return
+	}
 }
 
 func shareNote(c *gin.Context) {

@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
+	"net/url"
 )
 
 func getBcrypt(text string) string {
@@ -55,16 +58,24 @@ func notePage(c *gin.Context) {
 		c.Redirect(308, "/auth/login")
 		return
 	}
-	notesSession, _ := getMongoSession(dbName, notesSessionName)
-
-	var result Note
-	err = notesSession.Find(bson.M{"publicId": id}).One(&result)
-	if err != nil {
-		c.String(200, err.Error())
+	result := make(map[string]interface{})
+	resp, err := http.PostForm("http://localhost:2020/api/getNote", url.Values{"id":{id}, "t":{t}})
+	if err != nil{
+		c.Redirect(308, "/")
 		return
 	}
-	c.HTML(200, "comment.html", bson.M{"token": token, "note": result, "id": id})
-	return
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil{
+		c.Redirect(308, "/")
+		return
+	}
+	if result["ok"].(bool){
+		note := result["answer"].(map[string]interface{})
+		c.HTML(200, "comment.html", bson.M{"token": token, "note": note, "id": id})
+		return
+	}else{
+		c.Redirect(308, "/")
+	}
 }
 
 func main() {

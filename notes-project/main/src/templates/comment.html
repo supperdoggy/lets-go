@@ -9,7 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="/static/scripts/bg.js"></script>
     <script src="/static/scripts/comment.js"></script>
-    <title>{{.note.Title}}</title>
+    <title>{{.note.title}}</title>
     <style>
 
         .btn {
@@ -168,10 +168,10 @@
 <br>
 
 <div style="text-align: center;">
-    <input type="text" id="title" style="color: #000000;text-decoration:none;text-align: center;font-size: 40px;" value="{{.note.Title}}">
+    <input type="text" id="title" style="color: #000000;text-decoration:none;text-align: center;font-size: 40px;" value="{{.note.title}}">
     <form method="POST">
         <div class="textarea" style="text-align: center;">
-            <textarea id="text" class="textarea"  spellcheck="false" ng-model="loremIpsum" ng-keyup="autoExpand($event)" name="comment" style="width: 325px; height: 470px;" id="comment">{{.note.Text}}</textarea>
+            <textarea id="text" class="textarea"  spellcheck="false" ng-model="loremIpsum" ng-keyup="autoExpand($event)" name="comment" style="width: 325px; height: 470px;" id="comment">{{.note.text}}</textarea>
         </div>
         <br>
         <div style="text-align: center;">
@@ -183,7 +183,7 @@
 
 <form class="form-inline" action="">
     <input type="text" id="username" placeholder="Enter username" name="username">
-    <button onclick="share({{.id}}, {{.note.Owner}}, $('#username').val())" type="button">Share!</button>
+    <button onclick="share({{.id}}, {{.note.owner}}, $('#username').val())" type="button">Share!</button>
 </form>
 
 </body>
