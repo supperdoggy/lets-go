@@ -8,6 +8,32 @@ import (
 	"net/url"
 )
 
+func loginPage(c *gin.Context) {
+	cookie, err := c.Cookie("error")
+	if err != nil {
+		cookie = ""
+	}
+	data := gin.H{}
+	if cookie != "" {
+		data["error"] = cookie
+	}
+
+	c.HTML(200, "login.html", data)
+}
+
+func registerPage(c *gin.Context) {
+	cookie, err := c.Cookie("error")
+	if err != nil {
+		cookie = ""
+	}
+	data := gin.H{}
+	if cookie != "" {
+		data["error"] = cookie
+	}
+
+	c.HTML(200, "register.html", data)
+}
+
 func login(c *gin.Context) {
 	// deleting token
 	deleteCookieFromMap(c)
@@ -88,15 +114,15 @@ func register(c *gin.Context) {
 
 func checkLogin(c *gin.Context) {
 	t, err := c.Cookie("t")
-	if err != nil || !validateEntryToken(&t){
+	if err != nil || !validateEntryToken(&t) {
 		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
 		return
 	}
 }
 
-func checkIfAdmin(c *gin.Context){
+func checkIfAdmin(c *gin.Context) {
 	t, err := c.Cookie("t")
-	if err != nil || !userIsAdmin(&t){
+	if err != nil || !userIsAdmin(&t) {
 		c.Redirect(308, "/auth/login")
 		return
 	}
