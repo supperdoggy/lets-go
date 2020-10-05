@@ -88,13 +88,35 @@ func register(c *gin.Context) {
 
 func checkLogin(c *gin.Context) {
 	t, err := c.Cookie("t")
+	if err != nil || !validateEntryToken(&t){
+		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
+		return
+	}
+}
+
+func checkIfAdmin(c *gin.Context){
+	t, err := c.Cookie("t")
+	if err != nil || !userIsAdmin(&t){
+		c.Redirect(308, "/auth/login")
+		return
+	}
+}
+
+func userIsAdmin(s *string) bool {
+	resp, err := http.PostForm("http://localhost:2283/api/admin", url.Values{"t": {*s}})
 	if err != nil {
-		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
-		return
+		return false
 	}
-	if !validateEntryToken(&t) {
-		c.Redirect(http.StatusPermanentRedirect, "/auth/login")
-		return
+	data := make(map[string]interface{})
+	err = json.NewDecoder(resp.Body).Decode(&data)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
 	}
-	return
+	fmt.Println(data)
+	if !data["ok"].(bool) {
+		return false
+	} else {
+		return data["answer"].(bool)
+	}
 }

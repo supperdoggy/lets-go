@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
@@ -176,7 +175,6 @@ func getNote(c *gin.Context){
 }
 
 func shareNote(c *gin.Context) {
-	fmt.Println("Im here!")
 	noteSession, err := getMongoSession(dbName, notesSessionName)
 	if err != nil {
 		c.JSON(200, map[string]interface{}{
@@ -255,7 +253,6 @@ func shareNote(c *gin.Context) {
 
 // NEED TESTING
 func sendNotes(c *gin.Context) {
-	fmt.Println("im here!")
 	notesSession, err := getMongoSession(dbName, notesSessionName)
 	if err != nil {
 		c.JSON(200, map[string]interface{}{

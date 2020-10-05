@@ -7,9 +7,9 @@ import (
 	"net/url"
 )
 
-func processNotes(notes []interface{}) []map[string]interface{} {
+func processAnswer(i []interface{}) []map[string]interface{} {
 	result := make([]map[string]interface{}, 1)
-	for _, v := range notes {
+	for _, v := range i {
 		m := v.(map[string]interface{})
 		result = append(result, m)
 	}
@@ -49,8 +49,8 @@ func mainPage(c *gin.Context) {
 		sharedInterface = answer["sharedNotes"].([]interface{})
 	}
 
-	own := processNotes(ownInterface)[1:]
-	shared := processNotes(sharedInterface)[1:]
+	own := processAnswer(ownInterface)[1:]
+	shared := processAnswer(sharedInterface)[1:]
 	c.HTML(200, "index1.html", gin.H{"token": token, "own": own, "shared": shared})
 	return
 }

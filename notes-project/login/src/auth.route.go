@@ -74,7 +74,7 @@ func register(c *gin.Context) {
 		UniqueId: strconv.FormatInt(time.Now().UnixNano(), 10),
 		Username: username,
 		Password: getBcrypt(password),
-		Created:  time.Time{},
+		Created:  time.Now(),
 	}
 
 	usersCollection, err := getMongoSession(dbName, usersSessionName)
@@ -181,4 +181,93 @@ func getTokenStruct(c *gin.Context) {
 		c.JSON(200, response)
 		return
 	}
+}
+
+func userIsAdmin(c *gin.Context){
+	t := c.PostForm("t")
+	response := map[string]interface{}{
+		"ok":     false,
+		"error":  "",
+		"answer": false,
+	}
+
+	usersSession, err := getMongoSession(dbName, usersSessionName)
+	if err != nil {
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+
+	if token, ok := tokenCache[t]; ok{
+		if !token.expired(30){
+			var u User
+			err = usersSession.Find(bson.M{"username":token.Username}).One(&u)
+			if err != nil{
+				response["error"] = err.Error()
+			}else{
+				response["ok"] = true
+				response["answer"] = u.IsAdmin
+			}
+		}else{
+			delete(tokenCache, t)
+		}
+	}
+	c.JSON(200, response)
+	return
+}
+
+func deleteUser(c *gin.Context){
+	response := map[string]interface{}{
+		"ok":     false,
+		"error":  "",
+		"answer": false,
+	}
+	id := c.PostForm("id")
+	fmt.Println(id)
+	users, err := getMongoSession(dbName, usersSessionName)
+	if err != nil {
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	err = users.Remove(bson.M{"uniqueId":id})
+	if err != nil {
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	response["ok"] = true
+	c.JSON(200, response)
+	return
+}
+
+func getAllUsers(c *gin.Context){
+	response := map[string]interface{}{
+		"ok":     false,
+		"error":  "",
+		"answer": false,
+	}
+	t := c.PostForm("t")
+	if !validateEntryToken(&t){
+		response["error"] = "token error"
+		c.JSON(200, response)
+		return
+	}
+	users := make([]User, 100)
+	usersCollection, err := getMongoSession(dbName, usersSessionName)
+	if err != nil {
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	err = usersCollection.Find(bson.M{}).All(&users)
+	if err != nil{
+		response["error"] = err.Error()
+		c.JSON(200, response)
+		return
+	}
+	response["answer"] = users
+	response["ok"] = true
+	c.JSON(200, response)
+	return
 }

@@ -3,7 +3,7 @@ function del(id) {
         type:"POST",
         data:{"id":id},
     })
-    document.location.reload()
+    window.location.href = "http://localhost:8080/"
 }
 
 function newNote(username){
@@ -11,4 +11,5 @@ function newNote(username){
         type:"POST",
         data:{"Username":username, "Title":"Example"}
     })
+    window.location.href = "http://localhost:8080/"
 }

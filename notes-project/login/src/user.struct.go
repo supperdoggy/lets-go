@@ -11,4 +11,5 @@ type User struct {
 	Username string        `bson:"username" form:"username" json:"username"`
 	Password string        `bson:"password" form:"password" json:"password"`
 	Created  time.Time     `bson:"created" form:"created" json:"created"`
+	IsAdmin bool `bson:"isAdmin" form:"isAdmin" json:"isAdmin"`
 }

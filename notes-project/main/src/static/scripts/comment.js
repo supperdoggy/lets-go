@@ -5,6 +5,7 @@ function update(id){
         data:{"id":id, "Text":$("#text").val(), "Title":$("#title").val(),
         },
     })
+    window.alert("Saved!")
 }
 
 function share(id, owner, username) {
@@ -12,4 +13,5 @@ function share(id, owner, username) {
         type:"POST",
         data:{"Id":id, "Username":username, "Owner":owner},
     })
+    window.alert("Shared!")
 }

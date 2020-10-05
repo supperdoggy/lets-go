@@ -40,7 +40,6 @@ func validateEntryToken(s *string) bool {
 			return true
 		}
 		delete(tokenCache, *s)
-		return false
 	}
 	return false
 }
