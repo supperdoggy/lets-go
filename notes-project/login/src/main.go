@@ -4,9 +4,20 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"sync"
 )
 
-var tokenCache = make(map[string]enterToken)
+type cache struct {
+	m map[string]enterToken
+	sync.RWMutex
+}
+
+var tokenCache = cache{
+	m:       make(map[string]enterToken),
+	RWMutex: sync.RWMutex{},
+}
+
+var usersCollection, err = getMongoSession(dbName, usersSessionName)
 
 func getBcrypt(text string) string {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(text), 4)

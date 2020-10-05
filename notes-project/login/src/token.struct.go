@@ -34,28 +34,34 @@ func createNewToken(limited bool, username string) enterToken {
 }
 
 func validateEntryToken(s *string) bool {
-	t, ok := tokenCache[*s]
+	tokenCache.Lock()
+	defer tokenCache.Unlock()
+	t, ok := tokenCache.m[*s]
 	if ok {
 		if !t.expired(30) { // expiration time of token is set to 30 minutes
 			return true
 		}
-		delete(tokenCache, *s)
+		delete(tokenCache.m, *s)
 	}
 	return false
 }
 
 func deleteCookieFromMap(c *gin.Context) {
+	tokenCache.Lock()
+	defer tokenCache.Unlock()
 	t := c.PostForm("t")
 	if t != "" {
 		return
 	} else {
-		delete(tokenCache, t)
+		delete(tokenCache.m, t)
 		return
 	}
 }
 
 func findTokenStructInMap(t string) (enterToken, error) {
-	if token, ok := tokenCache[t]; ok {
+	tokenCache.Lock()
+	defer tokenCache.Unlock()
+	if token, ok := tokenCache.m[t]; ok {
 		return token, nil
 	}
 	return enterToken{}, fmt.Errorf("token is not valid")

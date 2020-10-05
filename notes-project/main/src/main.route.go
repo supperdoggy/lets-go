@@ -35,22 +35,10 @@ func mainPage(c *gin.Context) {
 	var notes map[string]interface{}
 	err = json.NewDecoder(resp.Body).Decode(&notes)
 	if err != nil {
-		panic(err.Error())
+		//panic(err.Error())
 		return
 	}
 
-	answer, _ := notes["answer"].(map[string]interface{})
-	var ownInterface []interface{}
-	var sharedInterface []interface{}
-	if answer["ownedNotes"] != nil {
-		ownInterface = answer["ownedNotes"].([]interface{})
-	}
-	if answer["sharedNotes"] != nil {
-		sharedInterface = answer["sharedNotes"].([]interface{})
-	}
-
-	own := processAnswer(ownInterface)[1:]
-	shared := processAnswer(sharedInterface)[1:]
-	c.HTML(200, "index1.html", gin.H{"token": token, "own": own, "shared": shared})
+	c.HTML(200, "index1.html", gin.H{"token": token, "own": notes["ownedNotes"], "shared": notes["sharedNotes"]})
 	return
 }

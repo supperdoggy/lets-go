@@ -5,7 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var notesSession, err = getMongoSession(dbName, notesSessionName)
+
 func main() {
+	if err != nil {
+		return
+	}
 	r := gin.Default()
 	api := r.Group("/api")
 	{

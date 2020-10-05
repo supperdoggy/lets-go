@@ -17,12 +17,6 @@ func login(c *gin.Context) {
 		"error":  "",
 		"answer": false,
 	}
-	usersCollection, err := getMongoSession(dbName, usersSessionName)
-	if err != nil {
-		response["error"] = "Error connecting to mongodb"
-		c.JSON(200, response)
-		return
-	}
 
 	username := c.PostForm("login")
 	password := c.PostForm("pass")
@@ -43,13 +37,13 @@ func login(c *gin.Context) {
 }
 
 func validateUser(username, password string, users *mgo.Collection) bool {
-	foundUsers := []User{}
-	err := users.Find(bson.M{"username": strings.ToLower(username)}).All(&foundUsers)
+	foundUsers := User{}
+	err := users.Find(bson.M{"username": strings.ToLower(username)}).One(&foundUsers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(foundUsers[0].Password), []byte(password)); err == nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUsers.Password), []byte(password)); err == nil {
 		return true
 	}
 	return false
@@ -77,12 +71,6 @@ func register(c *gin.Context) {
 		Created:  time.Now(),
 	}
 
-	usersCollection, err := getMongoSession(dbName, usersSessionName)
-	if err != nil {
-		fmt.Println(err.Error())
-		response["error"] = "Error connecting to mongodb"
-		c.JSON(200, response)
-	}
 	taken, err := usernameIsTaken(usersCollection, username)
 	if err != nil {
 		response["error"] = "cant find user in db"
@@ -133,8 +121,10 @@ func validateToken(c *gin.Context) {
 		response["answer"] = true
 	} else {
 		response["answer"] = false
-		if _, ok := tokenCache[t]; ok {
-			delete(tokenCache, t)
+		tokenCache.Lock()
+		defer tokenCache.Unlock()
+		if _, ok := tokenCache.m[t]; ok {
+			delete(tokenCache.m, t)
 		}
 	}
 	c.JSON(200, response)
@@ -154,7 +144,9 @@ func newToken(c *gin.Context) {
 		return
 	}
 	t := createNewToken(true, username)
-	tokenCache[t.Token] = t
+	tokenCache.Lock()
+	defer tokenCache.Unlock()
+	tokenCache.m[t.Token] = t
 	response["ok"] = true
 	response["answer"] = t.Token
 	c.JSON(200, response)
@@ -183,7 +175,7 @@ func getTokenStruct(c *gin.Context) {
 	}
 }
 
-func userIsAdmin(c *gin.Context){
+func userIsAdmin(c *gin.Context) {
 	t := c.PostForm("t")
 	response := map[string]interface{}{
 		"ok":     false,
@@ -191,32 +183,32 @@ func userIsAdmin(c *gin.Context){
 		"answer": false,
 	}
 
-	usersSession, err := getMongoSession(dbName, usersSessionName)
 	if err != nil {
 		response["error"] = err.Error()
 		c.JSON(200, response)
 		return
 	}
-
-	if token, ok := tokenCache[t]; ok{
-		if !token.expired(30){
+	tokenCache.Lock()
+	defer tokenCache.Unlock()
+	if token, ok := tokenCache.m[t]; ok {
+		if !token.expired(30) {
 			var u User
-			err = usersSession.Find(bson.M{"username":token.Username}).One(&u)
-			if err != nil{
+			err = usersCollection.Find(bson.M{"username": token.Username}).One(&u)
+			if err != nil {
 				response["error"] = err.Error()
-			}else{
+			} else {
 				response["ok"] = true
 				response["answer"] = u.IsAdmin
 			}
-		}else{
-			delete(tokenCache, t)
+		} else {
+			delete(tokenCache.m, t)
 		}
 	}
 	c.JSON(200, response)
 	return
 }
 
-func deleteUser(c *gin.Context){
+func deleteUser(c *gin.Context) {
 	response := map[string]interface{}{
 		"ok":     false,
 		"error":  "",
@@ -224,13 +216,7 @@ func deleteUser(c *gin.Context){
 	}
 	id := c.PostForm("id")
 	fmt.Println(id)
-	users, err := getMongoSession(dbName, usersSessionName)
-	if err != nil {
-		response["error"] = err.Error()
-		c.JSON(200, response)
-		return
-	}
-	err = users.Remove(bson.M{"uniqueId":id})
+	err = usersCollection.Remove(bson.M{"uniqueId": id})
 	if err != nil {
 		response["error"] = err.Error()
 		c.JSON(200, response)
@@ -241,27 +227,26 @@ func deleteUser(c *gin.Context){
 	return
 }
 
-func getAllUsers(c *gin.Context){
+func getAllUsers(c *gin.Context) {
 	response := map[string]interface{}{
 		"ok":     false,
 		"error":  "",
 		"answer": false,
 	}
 	t := c.PostForm("t")
-	if !validateEntryToken(&t){
+	if !validateEntryToken(&t) {
 		response["error"] = "token error"
 		c.JSON(200, response)
 		return
 	}
 	users := make([]User, 100)
-	usersCollection, err := getMongoSession(dbName, usersSessionName)
 	if err != nil {
 		response["error"] = err.Error()
 		c.JSON(200, response)
 		return
 	}
 	err = usersCollection.Find(bson.M{}).All(&users)
-	if err != nil{
+	if err != nil {
 		response["error"] = err.Error()
 		c.JSON(200, response)
 		return
